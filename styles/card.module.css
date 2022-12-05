@@ -1,0 +1,237 @@
+/* card.jsx */
+.card {
+  max-width: 600px;
+  margin: 1rem;
+    padding: 1.5rem;
+    text-align: left;
+    color: inherit;
+    text-decoration: none;
+    border: 5px solid #ffffff;
+    border-radius: 10px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    /* Center card in middle of screen */
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    align-self: center;
+    z-index: 10;
+    background-color: black;
+
+}
+@media (max-width: 1000px) {
+  .card {
+    size: 90%;
+    transform: scale(0.9, 0.8);
+  }
+}
+  
+
+  
+  
+ /* .card:hover,
+  .card:focus,
+   .card:active {
+    color: #0070f3;
+    border-color: #0070f3;
+  } */
+  
+  .card h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+  }
+  
+
+  .logo {
+    height: 1em;
+  }
+  .image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .image > img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 10px;
+    border: 1px solid #eaeaea;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    cursor: pointer;
+    
+  }
+  @media (max-width: 600px) {
+    .grid {
+      width: 100%;
+      flex-direction: column;
+    }
+    figure.image {
+      width: 261px;
+      height: 261px;
+    }
+  }
+.title {
+  font-size: 35px;
+  font-weight: 700;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  margin-bottom: 8px;
+  margin-top: 0;
+  cursor: pointer;
+  align-self: center;
+}
+.age {
+  font-size: 20px;
+  font-weight: 400;
+  margin-bottom: 8px;
+  margin-top: 0;
+  float: inline-end;
+  width: 50%;
+  display: inline;
+  padding-left: 10px;
+}
+.titleContainer {
+  flex-direction: row;
+  word-wrap: break-word;
+  align-self: center;
+  
+}
+.content {
+  font-size: 100000px !important;
+}
+/* Job name. In the right upper corner. Using flex */
+/* .ocu {
+  width: 50%;
+  display: flex;
+} */
+.header {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  font-size: 30px;
+  font-weight: 400;
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+.gender {
+  align-content: center;
+}
+.cardContent {
+  display: flex;
+  flex-direction: column;
+    align-items: baseline;
+}
+.likes, .dislikes {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+.detailsTop {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 10px 0px 0 0;
+}
+.details {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 15px;
+  justify-content: baseline;
+}
+.likes > svg, .dislikes > svg, .detailsTop > svg {
+  width: 60px;
+  height: 60px;
+  min-width: max-content;
+  margin-right: 5px;
+}
+/* .detailsTop > svg:nth-child(3) { */
+  /* width: 40px; */
+  /* height: 40px; */
+  /* min-width: max-content; */
+  /* margin-right: 5px; */
+/* } */
+
+.details > svg {
+  width: 60px;
+  height: 60px;
+  min-width: max-content;
+  margin-right: 5px;
+}
+.cardArrow {
+  width: 40px;
+  height: 40px;
+  min-width: max-content;
+  cursor: pointer;
+
+}
+.likes > p, .dislikes > p, .details > p, .detailsTop > p {
+  font-size: auto;
+  font-weight: 400;
+  margin-bottom: 0;
+  margin-top: 0;
+  text-align: left;
+  padding-left: 10px;
+
+  
+}
+.detailsOpen {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+.detailsClosed {
+  display: none;
+
+}
+/* .details > svg { */
+  /* width: 20px; */
+  /* height: 20px; */
+  /* min-width: max-content; */
+  /* margin-right: 5px; */
+/* } */
+
+
+.icon {
+  cursor: pointer;
+}
+.icon:hover, .title:hover, .cardArrow:hover {
+  color: #177e6f;
+}
+@media (max-width: 400px) {
+  .card {
+    size: 90%;
+    transform: scale(0.8, 0.7);
+  }
+}
+.choice {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  /* margin-top: 10px; */
+  width: -webkit-fill-available;
+  margin: 20 px -1rem;
+  padding: -1.5rem;
+}
+/* .icon {
+  width: 40px;
+  height: 40px;
+  min-width: max-content;
+  margin-left: 5px;
+} */
+.choice > svg{
+  width: 70px;
+  height: 70px;
+  min-width: max-content;
+  margin: 20px 55px 0px;
+  cursor: pointer;
+}
+.choice > svg:hover:nth-child(1) {
+  color: #ff0000;
+}
+.choice > svg:hover:nth-child(2) {
+  color: #00ff00;
+}

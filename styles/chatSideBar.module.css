@@ -1,0 +1,88 @@
+/* Left chat side bar */
+.chatlist {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    background-color: rgb(0, 0, 0);
+    border-right: 5px solid #ffffff;
+    border-radius: 0 30px 30px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
+    -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.chatlist::-webkit-scrollbar {
+    display: none;
+  }
+.chatlistHidden {
+    display: none;
+}
+.chatlistHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+    padding: 8px;
+    box-sizing: border-box;
+    top: 0;
+    z-index: 100;
+    color:white;
+}
+
+.chatlistHeaderSearch {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+    padding: 20px;
+    box-sizing: border-box;
+    top: 0;
+    z-index: 100;
+    background-color: black;
+}
+.chatlistHeaderSearch > p {
+    padding-left: 7px;
+    cursor: pointer;
+}
+.chatlistBody {
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: baseline;
+    height: 0;
+
+    z-index: 100;
+}
+.chatlistBodyChat {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    box-sizing: border-box;
+    top: 0;
+    z-index: 100;
+}
+.chatlistBodyChatAdd {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    justify-self: flex-end;
+    align-self: flex-end;
+    box-sizing: border-box;
+    z-index: 100;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    position: flex;
+    background-color: #10594e;
+    font-weight: 700;
+    cursor: pointer;
+}

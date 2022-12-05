@@ -1,0 +1,47 @@
+.chatBox {
+    background-color: rgb(0, 0, 0);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #ccc;
+    display: flex;
+    padding: 14px;
+    flex-direction: row;
+    width: 300px;
+    cursor: pointer;
+}
+.chatBoxName:hover {
+    color: #177e6f;
+}
+.chatBoxAvatar {
+    border-radius: 50%;
+    margin-right: 0px;
+    align-self: center;
+}
+.chatBoxDetails {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding-left: 10%;
+}
+.chatBoxName {
+    font-weight: 700;
+    color: whitesmoke;
+    margin-bottom: 5px;
+    top: 5px;
+    padding-left: 20px;
+    align-self: center;
+    height: fit-content;
+}
+.chatBoxName > h1 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+.chatBoxMessage {
+    font-weight: 700;
+    color: whitesmoke;
+    margin-bottom: 5px;
+    top: 5px;
+    align-self: center;
+    height: fit-content;
+}

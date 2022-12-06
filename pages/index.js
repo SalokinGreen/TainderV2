@@ -73,7 +73,7 @@ export default function Home() {
     if (matches.length < 5) {
       generate();
     }
-  });
+  }, [matches]);
   matches.length > 0 ? (match = matches[0]) : (match = null);
   // const updateMatchesOnDatabase = async () => {
   //   const { data, error } = await supabase

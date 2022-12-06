@@ -74,6 +74,11 @@ export default function Test() {
           "Content-Type": "application/json",
           authorization:
             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IldjR09admZSeW1pcGZyQmlHZmxXeiIsIm5jIjoiUHNLd21YV241UWRUaXREbkNwWlFiIiwiaWF0IjoxNjcwMjg1OTgxLCJleHAiOjE2NzI4Nzc5ODF9.bx0lTZkTAbE_ZExsX2yNoz4kIbmE5RDkoeWRO-oqBsU",
+          "Access-Control-Allow-Credentials": true,
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+          "Access-Control-Allow-Headers":
+            "Origin, X-Requested-With, Content-Type, Accept, Authorization",
         },
       }
     );

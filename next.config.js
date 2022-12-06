@@ -13,7 +13,7 @@ const nextConfig = {
         destination: "https://api.novelai.net/ai/generate",
       },
       {
-        source: "/",
+        source: "https://tainder.vercel.app",
         destination: "https://api.novelai.net/ai/generate",
       },
     ];

@@ -6,7 +6,7 @@ import Login from "../components/loginModal/login";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useSelector, useDispatch } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
-
+import { decode } from "base64-arraybuffer";
 import ChatList from "../components/Chat/chatSideBar";
 import {
   addMatch,
@@ -64,16 +64,8 @@ export default function Home() {
         setLoggedIn(true);
       }
     }
-    if (
-      (naiKey === null || naiKey === undefined || naiKey === "") &&
-      workingKey
-    ) {
-    }
   });
   useEffect(() => {
-    if (matches[0] === null) {
-      dispatch(dislikeMatch());
-    }
     if (matches.length < 5) {
       generate();
     }
@@ -83,7 +75,16 @@ export default function Home() {
       updateMatchesOnDatabase();
     }
   }, [matches]);
-  matches.length > 0 ? (match = matches[0]) : (match = null);
+  try {
+    if (matches[0] === null) {
+      dispatch(dislikeMatch());
+    } else {
+      matches.length > 0 ? (match = matches[0]) : (match = null);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
   const updateMatchesOnDatabase = async () => {
     const { data, error } = await supabase
       .from("users")
@@ -96,6 +97,9 @@ export default function Home() {
     }
   };
   const generate = async () => {
+    if (matches.length > 5) {
+      return null;
+    }
     let naiKey;
     try {
       naiKey = localStorage.getItem("naiToken");
@@ -105,11 +109,15 @@ export default function Home() {
       return null;
     }
     // const numberToGenerate = matches ? 5 - matches.length : 5;
+    if (matches !== null) {
+      if (matches[0] === null) {
+        dispatch(dislikeMatch());
+      }
+    }
     dispatch(generatingMatches());
     console.log("Generating");
     console.log(naiKey);
-    const matchesGenerated = await generateCard(
-      1,
+    let matchesGenerated = await generateCard(
       `Bearer ${naiKey}`,
       { minAge: 18, maxAge: 100 },
       {},
@@ -119,6 +127,27 @@ export default function Home() {
     ).catch((err) => {
       console.log(err);
     });
+    if (matchesGenerated) {
+      if (matchesGenerated.image !== "") {
+        let { data, error } = await supabase.storage
+          .from("avatars")
+          .upload(
+            `${session.user.id}/${matchesGenerated.id}.png`,
+            decode(matchesGenerated.image),
+            {
+              contentType: "image/png",
+            }
+          );
+        const { data: data2, error: error2 } = supabase.storage
+          .from("avatars")
+          .getPublicUrl(`${session.user.id}/${matchesGenerated.id}.png`);
+        if (data2) {
+          matchesGenerated.image = data2.publicUrl;
+        }
+      } else {
+        matchesGenerated.image = "";
+      }
+    }
     console.log("Generated Match", matchesGenerated);
     dispatch(addMatch(matchesGenerated));
     console.log("Done Generating");

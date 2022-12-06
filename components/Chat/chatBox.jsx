@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { replacePartner } from "../../store/chat";
 import _ from "lodash";
 import Image from "next/image";
-export default function ChatBox({ name, id }) {
+export default function ChatBox({ name, id, ogImage }) {
   const session = useSession();
   const supabase = useSupabaseClient();
   const dispatch = useDispatch();
@@ -14,34 +14,15 @@ export default function ChatBox({ name, id }) {
   const [gotImage, setGotImage] = useState(false);
   let avatars = [];
   const router = useRouter();
-  const getImage = async () => {
-    const { data, error } = await supabase.storage
-      .from("avatars")
-      .list(session.user.id, {
-        offset: 0,
-        sortBy: { column: "name", order: "asc" },
-      });
-
-    if (data) {
-      data.forEach((file) => {
-        let name = file.name.replace(".png", "");
-        avatars.push(name);
-      });
-      const result = _.includes(avatars, id);
-      if (result) {
-        const { data: data2, error: error2 } = supabase.storage
-          .from("avatars")
-          .getPublicUrl(`${session.user.id}/${id}.png`);
-        if (data2) {
-          setImage(data2.publicUrl);
-        }
+  useEffect(() => {
+    if (!gotImage) {
+      if (ogImage !== "") {
+        setImage(ogImage);
+        setGotImage(true);
       }
     }
-  };
-  if (!gotImage) {
-    getImage();
-    setGotImage(true);
-  }
+  });
+
   const goToChat = async () => {
     if (router.pathname === "/") {
       router.push(`/messages`);

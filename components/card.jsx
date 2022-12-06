@@ -48,7 +48,7 @@ export default function Card({ match, generate }) {
 
   let img;
   if (match.image.length > 0) {
-    img = `data:image/png;base64,${match.image}`;
+    img = match.image;
   } else {
     img = "/placeholder.png";
   }
@@ -60,9 +60,18 @@ export default function Card({ match, generate }) {
       uuid: match.id,
       name: match.name,
       lastMessage: {},
+      image: match.image,
     });
     uploadMatch();
-    dispatch(setChats({ uuid: match.id, name: match.name, lastMessage: {} }));
+    q;
+    dispatch(
+      setChats({
+        uuid: match.id,
+        name: match.name,
+        lastMessage: {},
+        image: match.image,
+      })
+    );
     dispatch(likeMatch());
     // update chats
     let { data, error } = await supabase
@@ -79,6 +88,16 @@ export default function Card({ match, generate }) {
     }
   };
   const dislike = async () => {
+    if (match.image !== "") {
+      console.log("deleting image");
+      console.log(match.id);
+      console.log(session.user.id);
+      const { data, error } = await supabase.storage
+        .from("avatars")
+        .remove([`${session.user.id}/${match.id}.png`]);
+      error ? console.log(error) : console.log(data);
+    }
+
     dispatch(dislikeMatch());
     const { data, error } = await supabase
       .from("users")
@@ -106,14 +125,13 @@ export default function Card({ match, generate }) {
         attributes: match.attributes,
         gender: match.gender,
         from: match.from,
+        image: match.image,
       },
     ]);
-    if (match.image !== "") {
-      let { data, error } = await supabase.storage
-        .from("avatars")
-        .upload(`${session.user.id}/${match.id}.png`, decode(match.image), {
-          contentType: "image/png",
-        });
+    if (error) {
+      console.log(error);
+    } else {
+      console.log(data);
     }
   };
   return (

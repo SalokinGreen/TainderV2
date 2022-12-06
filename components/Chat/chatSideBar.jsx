@@ -43,7 +43,12 @@ export default function ChatList({ openChat, setOpenChat, generate }) {
       <div className={styles.chatlistBody}>
         <div className={styles.chatlistBodyChat}>
           {filteredChats.map((chat) => (
-            <ChatBox name={chat.name} id={chat.uuid} key={chat.uuid} />
+            <ChatBox
+              name={chat.name}
+              id={chat.uuid}
+              key={chat.uuid}
+              ogImage={chat.image}
+            />
           ))}
         </div>
         <div className={styles.chatlistBodyChatAdd} onClick={() => handleAdd()}>

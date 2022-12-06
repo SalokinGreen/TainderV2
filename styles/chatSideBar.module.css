@@ -33,7 +33,9 @@
     z-index: 100;
     color:white;
 }
-
+#outlined-basic {
+    color: white;
+}
 .chatlistHeaderSearch {
     display: flex;
     flex-direction: row;
@@ -46,6 +48,8 @@
     top: 0;
     z-index: 100;
     background-color: black;
+    color: white;
+    border: #ffffff;
 }
 .chatlistHeaderSearch > p {
     padding-left: 7px;

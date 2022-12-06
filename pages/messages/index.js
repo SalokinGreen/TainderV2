@@ -66,6 +66,7 @@ export default function Messages() {
   useEffect(() => {
     if (message.includes("\n")) {
       setMessage("");
+      scrollToBottom();
     }
   }, [message]);
   const chatting = async (e) => {
@@ -106,6 +107,7 @@ export default function Messages() {
               id: id,
             })
           );
+          scrollToBottom();
           break;
         case (sendMessage.match(/^\s*$/) || []).length > 0:
           generate("ai");

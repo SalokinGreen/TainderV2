@@ -36,6 +36,7 @@ export default function ChatList({ openChat, setOpenChat, generate }) {
             variant="outlined"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            focused
           />
           <p onClick={() => setOpenChat()}>X</p>
         </div>

@@ -73,7 +73,7 @@ export default function Home() {
     if (matches.length < 5) {
       generate();
     }
-  }, [matches]);
+  }, [generating]);
   matches.length > 0 ? (match = matches[0]) : (match = null);
   // const updateMatchesOnDatabase = async () => {
   //   const { data, error } = await supabase
@@ -95,47 +95,48 @@ export default function Home() {
       console.log(error);
       return null;
     }
-    if (!generating && matches.length < 5) {
-      setGenerating(true);
-      // const numberToGenerate = matches ? 5 - matches.length : 5;
-      dispatch(generatingMatches());
-      console.log("Generating");
-      console.log(naiKey);
-      const matchesGenerated = await generateCard(
-        1,
-        `Bearer ${naiKey}`,
-        { minAge: 18, maxAge: 100 },
-        {},
-        "euterpe-v2",
-        user.settings.generateImages,
-        id
-      ).catch((err) => {
-        console.log(err);
-        setWorkingKey(false);
-      });
-      console.log(matchesGenerated);
-      if (matchesGenerated) {
-        try {
-          console.log("Add Match");
-          matchesGenerated.forEach((match) => {
-            dispatch(addMatch(match));
-          });
-          setWorkingKey(true);
-          // updateMatchesOnDatabase();
-        } catch (error) {
-          console.log("Error");
-          console.log(error);
-        }
+    // const numberToGenerate = matches ? 5 - matches.length : 5;
+    dispatch(generatingMatches());
+    console.log("Generating");
+    console.log(naiKey);
+    const matchesGenerated = await generateCard(
+      1,
+      `Bearer ${naiKey}`,
+      { minAge: 18, maxAge: 100 },
+      {},
+      "euterpe-v2",
+      user.settings.generateImages,
+      id
+    ).catch((err) => {
+      console.log(err);
+      setWorkingKey(false);
+    });
+    console.log(matchesGenerated);
+    if (matchesGenerated) {
+      try {
+        console.log("Add Match");
+        matchesGenerated.forEach((match) => {
+          dispatch(addMatch(match));
+        });
+        setWorkingKey(true);
+        // updateMatchesOnDatabase();
+      } catch (error) {
+        console.log("Error");
+        console.log(error);
       }
-      console.log("Done Generating");
+    }
+    console.log("Done Generating");
+    if (session) {
       const { data, error } = await supabase
         .from("users")
         .update({ matches: matches })
         .match({ user_id: session.user.id });
+
       console.log(data, error);
-      setGenerating(false);
     }
+    setGenerating(!generating);
   };
+
   // if (matches.length < 4 && !generating && session && workingKey) {
   //   setGenerating(true);
   //   generate();

@@ -182,3 +182,14 @@ background: linear-gradient(180deg, rgba(12,45,47,0.9472163865546218) 47%, rgba(
 .settings:hover, .chat:hover {
   color: #177e6f;
 }
+.errorContainer {
+  position: sticky;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  right: 5vw;
+  top: 5vh;
+  max-width: -webkit-fill-available;
+  z-index: 100000;
+
+}

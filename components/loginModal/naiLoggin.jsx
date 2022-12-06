@@ -3,7 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import getNaiAccessToken from "../../utils/misc/important/getNaiAccessToken";
 import { changeNaiKey } from "../../store/user";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
-export default function NaiLoggin({ activateNai, generate }) {
+export default function NaiLoggin({
+  activateNai,
+  generate,
+  setError,
+  setErrorMessage,
+  setVariation,
+}) {
   const session = useSession();
   const supabase = useSupabaseClient();
   const id = useSelector((state) => state.user._id);
@@ -15,9 +21,19 @@ export default function NaiLoggin({ activateNai, generate }) {
     const token = await getNaiAccessToken(username, password, id);
     dispatch(changeNaiKey(token));
     activateNai(true);
-    console.log(session.user.id);
-    localStorage.setItem("naiToken", token);
-    generate();
+    if (!token) {
+      setVariation("error");
+      setError(true);
+      setErrorMessage("Wrong NovelAI credentials");
+      return;
+    } else {
+      setVariation("success");
+      setError(true);
+      setErrorMessage("Successfully logged into NovelAI");
+      localStorage.setItem("naiToken", token);
+      generate();
+    }
+
     setUsername("");
     setPassword("");
   };

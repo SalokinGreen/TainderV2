@@ -11,7 +11,15 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { setGenerateImages } from "../store/user";
 import styles from "../styles/settingsMenu.module.css";
-export default function MenuSettings({ open, setOpen, activateNai, generate }) {
+export default function MenuSettings({
+  open,
+  setOpen,
+  activateNai,
+  generate,
+  setError,
+  setErrorMessage,
+  setVariation,
+}) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const settings = user.settings;
@@ -54,7 +62,13 @@ export default function MenuSettings({ open, setOpen, activateNai, generate }) {
         </div>
         <div className={styles.menuSettingsContentTitle}>NAI Loggin</div>
         <div className={styles.menuSettingsContentItem}>
-          <NaiLoggin activateNai={activateNai} generate={generate} />
+          <NaiLoggin
+            activateNai={activateNai}
+            generate={generate}
+            setError={setError}
+            setErrorMessage={setErrorMessage}
+            setVariation={setVariation}
+          />
         </div>
         <div className={styles.menuSettingsContentTitle}>Misc</div>
         <div className={styles.menuSettingsContentItem}>

@@ -56,33 +56,6 @@ export default function Test() {
   // button function
   const button = async () => {
     // get avatar urls
-    const about = await axios.post(
-      "https://api.novelai.net/ai/generate",
-      {
-        input: "Text generation example.",
-        model: "euterpe-v2",
-        parameters: {
-          use_string: true,
-          temperature: 1,
-          min_length: 10,
-          max_length: 30,
-        },
-      },
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-          authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IldjR09admZSeW1pcGZyQmlHZmxXeiIsIm5jIjoiUHNLd21YV241UWRUaXREbkNwWlFiIiwiaWF0IjoxNjcwMjg1OTgxLCJleHAiOjE2NzI4Nzc5ODF9.bx0lTZkTAbE_ZExsX2yNoz4kIbmE5RDkoeWRO-oqBsU",
-          "Access-Control-Allow-Credentials": true,
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-          "Access-Control-Allow-Headers":
-            "Origin, X-Requested-With, Content-Type, Accept, Authorization",
-        },
-      }
-    );
-    console.log(about);
   };
 
   return <button onClick={() => button()}>Test</button>;

@@ -74,18 +74,23 @@ export default function Home() {
       generate();
     }
   }, [generating]);
+  useEffect(() => {
+    if (session) {
+      updateMatchesOnDatabase();
+    }
+  }, [matches]);
   matches.length > 0 ? (match = matches[0]) : (match = null);
-  // const updateMatchesOnDatabase = async () => {
-  //   const { data, error } = await supabase
-  //     .from("users")
-  //     .update({ matches: matches })
-  //     .eq("user_id", session.user.id);
-  //   if (error) {
-  //     console.log(error);
-  //   } else {
-  //     console.log(data);
-  //   }
-  // };
+  const updateMatchesOnDatabase = async () => {
+    const { data, error } = await supabase
+      .from("users")
+      .update({ matches: matches })
+      .eq("user_id", session.user.id);
+    if (error) {
+      console.log(error);
+    } else {
+      console.log(data);
+    }
+  };
   const generate = async () => {
     let naiKey;
     try {
@@ -111,29 +116,17 @@ export default function Home() {
       console.log(err);
       setWorkingKey(false);
     });
-    console.log(matchesGenerated);
-    if (matchesGenerated) {
-      try {
-        console.log("Add Match");
-        matchesGenerated.forEach((match) => {
-          dispatch(addMatch(match));
-        });
-        setWorkingKey(true);
-        // updateMatchesOnDatabase();
-      } catch (error) {
-        console.log("Error");
-        console.log(error);
-      }
-    }
+    console.log("Generated Match", matchesGenerated);
+    dispatch(addMatch(matchesGenerated));
     console.log("Done Generating");
-    if (session) {
-      const { data, error } = await supabase
-        .from("users")
-        .update({ matches: matches })
-        .match({ user_id: session.user.id });
+    // if (session) {
+    //   const { data, error } = await supabase
+    //     .from("users")
+    //     .update({ matches: matches })
+    //     .match({ user_id: session.user.id });
 
-      console.log(data, error);
-    }
+    //   console.log(data, error);
+    // }
     setGenerating(!generating);
   };
 

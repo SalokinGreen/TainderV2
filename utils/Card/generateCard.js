@@ -13,13 +13,14 @@ export default async function generateCard(
   img,
   id
 ) {
+  let image;
   let matches = [];
 
   for (let i = 0; i < n; i++) {
     // generate card details
     const input = generateDetails(pref);
     // generate card
-    const response1 = await axios.post("/api/match", {
+    const likes = await axios.post("/api/match", {
       key: key,
       input: {
         name: input.name,
@@ -34,7 +35,7 @@ export default async function generateCard(
       img,
       type: 1,
     });
-    const response2 = await axios.post("/api/match", {
+    const dislikes = await axios.post("/api/match", {
       key: key,
       input: {
         name: input.name,
@@ -43,13 +44,14 @@ export default async function generateCard(
         attributes: input.attributes,
         from: input.from,
         work: input.work,
+        likes: likes.data,
       },
       parameters,
       model,
       img,
       type: 2,
     });
-    const response3 = await axios.post("/api/match", {
+    const about = await axios.post("/api/match", {
       key: key,
       input: {
         name: input.name,
@@ -58,17 +60,42 @@ export default async function generateCard(
         attributes: input.attributes,
         from: input.from,
         work: input.work,
+        likes: likes.data,
+        dislikes: dislikes.data,
       },
       parameters,
       model,
       img,
       type: 3,
     });
+    if (img) {
+      const requestImage = await axios.post("/api/match", {
+        key: key,
+        input: {
+          name: input.name,
+          age: input.age,
+          gender: input.gender,
+          attributes: input.attributes,
+          from: input.from,
+          work: input.work,
+          likes: likes.data,
+          dislikes: dislikes.data,
+          about: about.data,
+        },
+        parameters,
+        model,
+        img,
+        type: 4,
+      });
+      image = cleanNaiImgResponse(requestImage.data);
+    } else {
+      image = "";
+    }
     // dispatch match to user counter
     // const data = response.data;
     // const image = data.img === "" ? "" : cleanNaiImgResponse(data.img);
     console.log("AAAAAAAAAAAAAA");
-    console.log(response1);
+    console.log(likes, dislikes, about, image);
     const match = {
       name: input.name,
       age: input.age,
@@ -76,15 +103,15 @@ export default async function generateCard(
       attributes: input.attributes,
       from: input.from,
       work: input.work,
-      image: "",
-      likes: response1.data,
-      dislikes: response2.data,
-      about: response3.data,
+      image: image,
+      likes: likes.data,
+      dislikes: dislikes.data,
+      about: about.data,
       chat: [],
       id: uuidv4(),
     };
-    matches.push(match);
-    return matches;
+    console.log("MATCH", match);
+    return match;
   }
 }
 // Maybe adding hobbies later

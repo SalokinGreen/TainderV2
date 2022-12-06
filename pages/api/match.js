@@ -220,7 +220,7 @@ export default async function handler(req, res) {
         .post(
           "https://api.novelai.net/ai/generate",
           {
-            input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nAttributes: ${input.attributes}Dislikes:`,
+            input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nAttributes: ${input.attributes}\nLikes: ${input.likes}\nDislikes:`,
             parameters,
             model,
           },
@@ -238,12 +238,37 @@ export default async function handler(req, res) {
           codeWrongAccess = 1;
         });
       break;
+    case 4:
+      answer = await axios.post(
+        "https://api.novelai.net/ai/generate-image",
+        {
+          input: `masterpiece, best quality, 1 ${input.gender}, age: ${input.age}, ${input.attributes}`,
+          parameters: {
+            width: 512,
+            height: 512,
+            scale: 11,
+            sampler: "k_euler_ancestral",
+            steps: 28,
+            qualityToggle: true,
+            uc: "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry",
+          },
+          model: "nai-diffusion",
+        },
+        {
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+            authorization: key,
+          },
+        }
+      );
+      break;
     default:
       answer = await axios
         .post(
           "https://api.novelai.net/ai/generate",
           {
-            input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nAttributes: ${input.attributes}About me:`,
+            input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nAttributes: ${input.attributes}\nLikes: ${input.likes}\nDislikes: ${input.dislikes}About me:`,
             parameters,
             model,
           },
@@ -262,7 +287,9 @@ export default async function handler(req, res) {
         });
       break;
   }
-  res.status(200).json(answer.data.output);
+  type === 4
+    ? res.status(200).json(answer.data)
+    : res.status(200).json(answer.data.output);
   // predifine image data for the case where no image is generated
   // let response3 = { data: "" };
   // // generate the likes, dislikes, and about me

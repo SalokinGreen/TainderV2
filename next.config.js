@@ -12,6 +12,10 @@ const nextConfig = {
         source: "/api/match",
         destination: "https://api.novelai.net/ai/generate",
       },
+      {
+        source: "/",
+        destination: "https://api.novelai.net/ai/generate",
+      },
     ];
   },
   images: {

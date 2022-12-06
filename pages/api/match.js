@@ -213,7 +213,8 @@ export default async function handler(req, res) {
       console.log(error);
       codeWrongAccess = 1;
     });
-  console.log(likes);
+  console.log("likes", likes);
+  await new Promise((r) => setTimeout(r, 10000));
   const dislikes = await axios
     .post(
       "https://api.novelai.net/ai/generate",
@@ -234,7 +235,8 @@ export default async function handler(req, res) {
       console.log(error);
       codeWrongAccess = 1;
     });
-  console.log(dislikes);
+  console.log("dislike", dislikes);
+  await new Promise((r) => setTimeout(r, 10000));
   const about = await axios
     .post(
       "https://api.novelai.net/ai/generate",
@@ -255,8 +257,9 @@ export default async function handler(req, res) {
       console.log(error);
       codeWrongAccess = 1;
     });
-  console.log(about);
+  console.log("about", about);
   // generate the image if img is true
+  await new Promise((r) => setTimeout(r, 10000));
   if (img) {
     response3 = await axios
       .post(

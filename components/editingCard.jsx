@@ -238,7 +238,7 @@ export default function EditingCard({ chat, setEditing }) {
           </div>
           <div className={styles.likes}>
             <AiFillLike className={styles.icon} />
-            <input
+            <textarea
               value={chat.likes}
               className={styles.Inputs}
               onChange={(e) =>
@@ -246,11 +246,11 @@ export default function EditingCard({ chat, setEditing }) {
                   changeDetails({ type: "likes", value: e.target.value })
                 )
               }
-            ></input>
+            ></textarea>
           </div>
           <div className={styles.dislikes}>
             <AiFillDislike className={styles.icon} />
-            <input
+            <textarea
               value={chat.dislikes}
               className={styles.Inputs}
               onChange={(e) =>
@@ -258,11 +258,11 @@ export default function EditingCard({ chat, setEditing }) {
                   changeDetails({ type: "dislikes", value: e.target.value })
                 )
               }
-            ></input>
+            ></textarea>
           </div>
           <div className={styles.dislikes}>
             <SiAboutdotme className={styles.icon} />
-            <input
+            <textarea
               value={chat.about}
               className={styles.Inputs}
               onChange={(e) =>
@@ -270,7 +270,7 @@ export default function EditingCard({ chat, setEditing }) {
                   changeDetails({ type: "about", value: e.target.value })
                 )
               }
-            ></input>
+            ></textarea>
           </div>
         </div>
 
@@ -308,7 +308,7 @@ export default function EditingCard({ chat, setEditing }) {
             </div>
             <div className={styles.details}>
               <BiWorld className={styles.icon} />{" "}
-              <input
+              <textarea
                 value={chat.from}
                 className={styles.Inputs}
                 onChange={(e) =>
@@ -316,11 +316,11 @@ export default function EditingCard({ chat, setEditing }) {
                     changeDetails({ type: "from", value: e.target.value })
                   )
                 }
-              ></input>
+              ></textarea>
             </div>
             <div className={styles.details}>
               <AiFillStar className={styles.icon} />
-              <input
+              <textarea
                 value={chat.attributes}
                 className={styles.Inputs}
                 onChange={(e) =>
@@ -328,7 +328,7 @@ export default function EditingCard({ chat, setEditing }) {
                     changeDetails({ type: "attributes", value: e.target.value })
                   )
                 }
-              ></input>
+              ></textarea>
             </div>
           </div>
         </div>

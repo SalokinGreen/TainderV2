@@ -24,6 +24,7 @@ export default function Messages() {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const messagesEndRef = useRef(null);
+  let formRef = useRef(null);
   const session = useSession();
   const supabase = useSupabaseClient();
   const router = useRouter();
@@ -62,7 +63,11 @@ export default function Messages() {
       saveChat();
     }
   }, [chat]);
-
+  useEffect(() => {
+    if (message.includes("\n")) {
+      setMessage("");
+    }
+  }, [message]);
   const chatting = async (e) => {
     try {
       e.preventDefault();
@@ -183,6 +188,12 @@ export default function Messages() {
       console.log(error2);
     }
   };
+  const onEnterPress = (e) => {
+    if (e.keyCode == 13 && e.shiftKey == false) {
+      chatting();
+    }
+  };
+
   return (
     <div className={styles.screen}>
       <ChatList openChat={openChat} setOpenChat={setOpenChat} />
@@ -240,13 +251,18 @@ export default function Messages() {
           })}
           <div ref={messagesEndRef} className={styles.chatAnker} />
         </div>
-        <form className={styles.chatroomFooter} onSubmit={chatting}>
-          <input
+        <form
+          className={styles.chatroomFooter}
+          onSubmit={chatting}
+          ref={(el) => (formRef = el)}
+        >
+          <textarea
             className={styles.textInput}
             type="text"
             placeholder="Type a message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={onEnterPress}
           />
           <button
             className={

@@ -276,6 +276,8 @@
   color: white;
   border: none;
   width: -webkit-fill-available;
+  overflow: hidden;
+
 }
 @media (max-width: 1000px) {
   .card {

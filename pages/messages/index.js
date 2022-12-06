@@ -15,7 +15,6 @@ import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 import axios from "axios";
 export default function Messages() {
-  const [avatar, setAvatar] = useState("");
   const [openChat, setOpenChat] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -44,37 +43,7 @@ export default function Messages() {
       dispatch(loggingIn(data[0]));
     }
   };
-  const getImage = async () => {
-    const { data, error } = await supabase.storage
-      .from("avatars")
-      .list(session.user.id, {
-        offset: 0,
-        sortBy: { column: "name", order: "asc" },
-      });
 
-    if (data) {
-      let result = false;
-      data.forEach((file) => {
-        let name = file.name.replace(".png", "");
-        if (name === chat.id) {
-          result = true;
-        }
-      });
-      if (result) {
-        const { data: data2, error: error2 } = supabase.storage
-          .from("avatars")
-          .getPublicUrl(`${session.user.id}/${chat.id}.png`);
-        if (data2) {
-          setAvatar(data2.publicUrl);
-        }
-      } else {
-        setAvatar("");
-      }
-    } else {
-      setAvatar("");
-      console.log(error);
-    }
-  };
   useEffect(() => {
     if (!loggedIn) {
       try {
@@ -83,12 +52,6 @@ export default function Messages() {
           setLoggedIn(true);
         }
       } catch {}
-    }
-    if (!chat.gotAvatar) {
-      if (session) {
-        getImage();
-        dispatch(getAvatar());
-      }
     }
   });
   useEffect(() => {
@@ -234,14 +197,14 @@ export default function Messages() {
       <div className={styles.chatroom}>
         <div
           className={
-            avatar === ""
+            chat.avatar === ""
               ? styles.chatroomHeaderNoAvatar
               : styles.chatroomHeader
           }
         >
-          {avatar === "" ? null : (
+          {chat.avatar === "" ? null : (
             <Image
-              src={avatar}
+              src={chat.avatar}
               width={256}
               height={256}
               alt="avatar"
@@ -251,7 +214,7 @@ export default function Messages() {
 
           <div
             className={
-              avatar === ""
+              chat.avatar === ""
                 ? styles.chatroomHeaderTitleNoAvatar
                 : styles.chatroomHeaderTitle
             }

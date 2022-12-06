@@ -26,8 +26,13 @@ const nextConfig = {
         hostname: "qzhocikvwsijwowyxhlm.supabase.co",
         pathname: "/storage/v1/object/sign/avatars/**",
       },
+      {
+        protocol: "https",
+        hostname: "i.imgur.com",
+        pathname: "/**",
+      },
     ],
-    domains: ["qzhocikvwsijwowyxhlm.supabase.co"],
+    domains: ["qzhocikvwsijwowyxhlm.supabase.co", "i.imgur.com"],
   },
 };
 

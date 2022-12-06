@@ -11,6 +11,8 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { setGenerateImages } from "../store/user";
 import styles from "../styles/settingsMenu.module.css";
+import EditingCard from "./editingCard";
+import UserCard from "./userCard";
 export default function MenuSettings({
   open,
   setOpen,
@@ -19,6 +21,7 @@ export default function MenuSettings({
   setError,
   setErrorMessage,
   setVariation,
+  setEditing,
 }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -74,6 +77,13 @@ export default function MenuSettings({
         <div className={styles.menuSettingsContentItem}>
           <Button variant="contained" color="error" onClick={() => logout()}>
             LOGOUT
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => setEditing(true)}
+          >
+            Profile
           </Button>
         </div>
       </div>

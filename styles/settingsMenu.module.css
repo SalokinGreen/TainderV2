@@ -107,6 +107,9 @@ div.menuSettingsHeaderClose {
     top: 0;
     z-index: 100;
 }
+.menuSettingsContentItem > button {
+    margin: 20px;
+}
 .menuSettingsContentItemTitle {
     font-size: 1.5rem;
     font-weight: 700;

@@ -27,6 +27,7 @@ import generateCard from "../utils/Card/generateCard";
 import { useRouter } from "next/router";
 import getNaiAccessKey from "../utils/misc/important/getNaiAccessToken";
 import MenuSettings from "../components/menuSettings";
+import UserCard from "../components/userCard";
 export default function Home() {
   // function to get api data
   const session = useSession();
@@ -39,6 +40,7 @@ export default function Home() {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [variation, setVariation] = useState("error");
+  const [editing, setEditing] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const naiKey = useSelector((state) => state.user.naiKey);
@@ -205,7 +207,7 @@ export default function Home() {
           </ClickAwayListener>
         </div>
       ) : null}
-      {loggedIn && match ? (
+      {loggedIn && match && !editing ? (
         <Card match={match} generate={generate} />
       ) : generating ? (
         <CircularProgress />
@@ -225,6 +227,9 @@ export default function Home() {
           className={styles.settings}
         />
       </div>
+      {editing ? (
+        <UserCard user={user.profile} setEditing={setEditing} />
+      ) : null}
       <MenuSettings
         open={openSettings}
         setOpen={setOpenSettings}
@@ -233,6 +238,7 @@ export default function Home() {
         setError={setError}
         setErrorMessage={setErrorMessage}
         setVariation={setVariation}
+        setEditing={setEditing}
       />
     </div>
   );

@@ -1,4 +1,5 @@
 import axios from "axios";
+// euterpe-v2:fb8bfb7793070e6dbcaa465304c93c384a7a7d26a9039958ce42c4db04be0e18:f632afc16a5085bf22e92ef06bed09abdb474ee3a24b1ce3d3800b76ee11a657
 const parameters = {
   temperature: 1.07,
   max_length: 40,
@@ -167,8 +168,7 @@ const parameters = {
   use_cache: false,
   use_string: true,
   return_full_text: false,
-  prefix:
-    "euterpe-v2:fb8bfb7793070e6dbcaa465304c93c384a7a7d26a9039958ce42c4db04be0e18:f632afc16a5085bf22e92ef06bed09abdb474ee3a24b1ce3d3800b76ee11a657",
+  prefix: "vanilla",
   logit_bias_exp: [
     {
       sequence: [8162],

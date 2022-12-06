@@ -11,8 +11,12 @@ import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 // Store
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import { likeMatch, dislikeMatch, setChats } from "../store/user";
-import { changeDetails } from "../store/chat";
+import {
+  likeMatch,
+  dislikeMatch,
+  setChats,
+  changeDetails,
+} from "../store/user";
 // Components
 import { MdWork } from "react-icons/md";
 import {
@@ -34,164 +38,22 @@ import { style } from "@mui/system";
 
 // Dating Profile like card
 
-export default function EditingCard({ chat, setEditing }) {
+export default function UserCard({ user, setEditing }) {
   const [cardDetails, setCardDetails] = useState(false);
   const [saving, setSaving] = useState(false);
   const session = useSession();
   const supabase = useSupabaseClient();
   const dispatch = useDispatch();
-
-  let img;
-  if (chat.avatar.length > 0) {
-    img = chat.avatar;
-  } else {
-    img = "/placeholder.png";
-  }
-  const updateLike = async () => {
-    const likes = chat.likes;
-    const { data, error } = await supabase
-      .from("chats")
-      .update({ likes: likes })
-      .match({ user_id: session.user.id, uuid: chat.id });
-    if (error) {
-      console.log(error);
-    }
-    setSaving(false);
-  };
-  const updateDislike = async () => {
+  const save = async () => {
     let { data, error } = await supabase
-      .from("chats")
-      .update({ chat: chat.messages })
-      .match({ user_id: session.user.id, uuid: chat.id });
-    if (error) {
-      console.log(error);
-    }
-    setSaving(false);
-  };
-  const updateAge = async () => {
-    let { data, error } = await supabase
-      .from("chats")
-      .update({ age: chat.age })
-      .match({ user_id: session.user.id, uuid: chat.id });
-    if (error) {
-      console.log(error);
-    }
-    setSaving(false);
-  };
-  const updateGender = async () => {
-    let { data, error } = await supabase
-      .from("chats")
-      .update({ gender: chat.gender })
-      .match({ user_id: session.user.id, uuid: chat.id });
-    if (error) {
-      console.log(error);
-    }
-    setSaving(false);
-  };
-  const updateName = async () => {
-    let { data, error } = await supabase
-      .from("chats")
-      .update({ name: chat.name })
-      .match({ user_id: session.user.id, uuid: chat.id });
-    if (error) {
-      console.log(error);
-    }
-    setSaving(false);
-  };
-  const updateAbout = async () => {
-    let { data, error } = await supabase
-      .from("chats")
-      .update({ about: chat.about })
-      .match({ user_id: session.user.id, uuid: chat.id });
-    if (error) {
-      console.log(error);
-    }
-    setSaving(false);
-  };
-  const updateWork = async () => {
-    let { data, error } = await supabase
-      .from("chats")
-      .update({ work: chat.work })
-      .match({ user_id: session.user.id, uuid: chat.id });
-    if (error) {
-      console.log(error);
-    }
-    setSaving(false);
-  };
-  const updateFrom = async () => {
-    let { data, error } = await supabase
-      .from("chats")
-      .update({ from: chat.from })
-      .match({ user_id: session.user.id, uuid: chat.id });
-    if (error) {
-      console.log(error);
-    }
-    setSaving(false);
-  };
-  const updateAttributes = async () => {
-    let { data, error } = await supabase
-      .from("chats")
-      .update({ attributes: chat.attributes })
-      .match({ user_id: session.user.id, uuid: chat.id });
-    if (error) {
-      console.log(error);
-    }
-    setSaving(false);
+      .from("users")
+      .update({ profile: user })
+      .eq("user_id", session.user.id);
+    console.log(data, error);
   };
   useEffect(() => {
-    if (!saving) {
-      setSaving(true);
-      updateLike();
-    }
-  }, [chat.likes]);
-  useEffect(() => {
-    if (!saving) {
-      setSaving(true);
-      updateDislike();
-    }
-  }, [chat.dislikes]);
-  useEffect(() => {
-    if (!saving) {
-      setSaving(true);
-      updateAge();
-    }
-  }, [chat.age]);
-  useEffect(() => {
-    if (!saving) {
-      setSaving(true);
-      updateGender();
-    }
-  }, [chat.gender]);
-  useEffect(() => {
-    if (!saving) {
-      setSaving(true);
-      updateName();
-    }
-  }, [chat.name]);
-  useEffect(() => {
-    if (!saving) {
-      setSaving(true);
-      updateAbout();
-    }
-  }, [chat.about]);
-  useEffect(() => {
-    if (!saving) {
-      setSaving(true);
-      updateWork();
-    }
-  }, [chat.work]);
-  useEffect(() => {
-    if (!saving) {
-      setSaving(true);
-      updateFrom();
-    }
-  }, [chat.from]);
-  useEffect(() => {
-    if (!saving) {
-      setSaving(true);
-      updateAttributes();
-    }
-  }, [chat.attributes]);
+    save();
+  }, [user]);
   return (
     <ClickAwayListener onClickAway={() => setEditing(false)}>
       <div className={styles.card}>
@@ -199,7 +61,7 @@ export default function EditingCard({ chat, setEditing }) {
           <div className={styles.gender}>
             <BsFillMoonStarsFill className={styles.icon} />{" "}
             <input
-              value={chat.age}
+              value={user.age}
               className={styles.ageInput}
               onChange={(e) =>
                 dispatch(changeDetails({ type: "age", value: e.target.value }))
@@ -208,7 +70,7 @@ export default function EditingCard({ chat, setEditing }) {
           </div>
           <div className={styles.gender}>
             <input
-              value={chat.gender}
+              value={user.gender}
               className={styles.genderInput}
               onChange={(e) =>
                 dispatch(
@@ -222,24 +84,29 @@ export default function EditingCard({ chat, setEditing }) {
         <div className={styles.image}>
           <figure className={styles.image}>
             {/* <img src={word.value} alt="Placeholder image" /> */}
-            <Image src={img} alt="Placeholder image" width={512} height={512} />
+            <Image
+              src={user.image}
+              alt="Placeholder image"
+              width={512}
+              height={512}
+            />
           </figure>
         </div>
 
         <div className={styles.cardContent}>
           <div className={styles.titleContainer}>
-            <textarea
-              value={chat.name}
+            <input
+              value={user.name}
               className={styles.nameInput}
               onChange={(e) =>
                 dispatch(changeDetails({ type: "name", value: e.target.value }))
               }
-            ></textarea>
+            ></input>
           </div>
           <div className={styles.likes}>
             <AiFillLike className={styles.icon} />
             <textarea
-              value={chat.likes}
+              value={user.likes}
               className={styles.Inputs}
               onChange={(e) =>
                 dispatch(
@@ -251,7 +118,7 @@ export default function EditingCard({ chat, setEditing }) {
           <div className={styles.dislikes}>
             <AiFillDislike className={styles.icon} />
             <textarea
-              value={chat.dislikes}
+              value={user.dislikes}
               className={styles.Inputs}
               onChange={(e) =>
                 dispatch(
@@ -263,7 +130,7 @@ export default function EditingCard({ chat, setEditing }) {
           <div className={styles.dislikes}>
             <SiAboutdotme className={styles.icon} />
             <textarea
-              value={chat.about}
+              value={user.about}
               className={styles.Inputs}
               onChange={(e) =>
                 dispatch(
@@ -297,7 +164,7 @@ export default function EditingCard({ chat, setEditing }) {
             <div className={styles.details}>
               <MdWork className={styles.icon} />{" "}
               <textarea
-                value={chat.work}
+                value={user.work}
                 className={styles.Inputs}
                 onChange={(e) =>
                   dispatch(
@@ -309,7 +176,7 @@ export default function EditingCard({ chat, setEditing }) {
             <div className={styles.details}>
               <BiWorld className={styles.icon} />{" "}
               <textarea
-                value={chat.from}
+                value={user.from}
                 className={styles.Inputs}
                 onChange={(e) =>
                   dispatch(
@@ -321,7 +188,7 @@ export default function EditingCard({ chat, setEditing }) {
             <div className={styles.details}>
               <AiFillStar className={styles.icon} />
               <textarea
-                value={chat.attributes}
+                value={user.attributes}
                 className={styles.Inputs}
                 onChange={(e) =>
                   dispatch(

@@ -210,6 +210,7 @@ export default async function handler(req, res) {
       }
     )
     .catch((error) => {
+      console.log("error1");
       console.log(error);
       codeWrongAccess = 1;
     });
@@ -232,6 +233,7 @@ export default async function handler(req, res) {
       }
     )
     .catch((error) => {
+      console.log("error2");
       console.log(error);
       codeWrongAccess = 1;
     });
@@ -255,6 +257,7 @@ export default async function handler(req, res) {
     )
     .catch((error) => {
       console.log(error);
+      console.log("error3");
       codeWrongAccess = 1;
     });
   console.log("about", about);
@@ -287,6 +290,7 @@ export default async function handler(req, res) {
       )
       .catch((error) => {
         console.log(error);
+        console.log("error4");
         codeNoAnlas = 1;
       });
     console.log(response3);

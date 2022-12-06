@@ -97,7 +97,7 @@ export default function Home() {
     }
   };
   const generate = async () => {
-    if (matches.length > 5) {
+    if (matches.length > 5 || !session) {
       return null;
     }
     let naiKey;

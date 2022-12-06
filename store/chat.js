@@ -37,11 +37,48 @@ export const chatCounter = createSlice({
     changeChat: (state, action) => {
       state.messages = action.payload;
     },
+    changeDetails: (state, action) => {
+      switch (action.payload.type) {
+        case "name":
+          state.name = action.payload.value;
+          break;
+        case "age":
+          state.age = action.payload.value;
+          break;
+        case "about":
+          state.about = action.payload.value;
+          break;
+        case "from":
+          state.from = action.payload.value;
+          break;
+        case "work":
+          state.work = action.payload.value;
+          break;
+        case "likes":
+          state.likes = action.payload.value;
+          break;
+        case "dislikes":
+          state.dislikes = action.payload.value;
+          break;
+        case "attributes":
+          state.attributes = action.payload.value;
+          break;
+
+        default:
+          state.gender = action.payload.value;
+          break;
+      }
+    },
   },
 });
 
-export const { replacePartner, getAvatar, addMessage, changeChat } =
-  chatCounter.actions;
+export const {
+  replacePartner,
+  getAvatar,
+  addMessage,
+  changeChat,
+  changeDetails,
+} = chatCounter.actions;
 
 export const selectChatCounter = (state) => state.chatCounter.value;
 

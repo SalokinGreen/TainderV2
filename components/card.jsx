@@ -77,7 +77,7 @@ export default function Card({ match, generate }) {
       .from("users")
       .update({ chats: sendChat })
       .match({ user_id: session.user.id });
-    generate();
+    // generate();
     const { data: data2, error: error2 } = await supabase
       .from("users")
       .update({ matches: matches.slice(1) })

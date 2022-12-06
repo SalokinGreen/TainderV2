@@ -15,7 +15,7 @@
 }
 .chatroom {
     background-color: #000000;
-    border: 5px solid #ffffff;
+    border: 1px solid #ffffff;
     border-radius: 4px;
     width: 1000px;
     height: 100vh;
@@ -58,6 +58,7 @@
     border-radius: 0 0 40px 40px;
     cursor: pointer;
     color: white;
+    border-bottom-color: rgb(255 255 255) !important
 }
 .chatroomHeader:hover {
     color: #177e6f;
@@ -83,6 +84,8 @@
     margin-right: 10px;
     overflow: hidden;
     padding: 0 5vw 0 3px;
+    
+
     
 }
 .chatroomHeaderTitleNoAvatar {
@@ -226,4 +229,8 @@
 }
 .chatAnker {
     visibility: hidden;
+}
+
+.menuButtons > svg {
+    color:white
 }

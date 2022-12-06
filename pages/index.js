@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 import { decode } from "base64-arraybuffer";
 import Alert from "@mui/material/Alert";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 import ChatList from "../components/Chat/chatSideBar";
 import {
@@ -35,7 +36,7 @@ export default function Home() {
   const [workingKey, setWorkingKey] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
   const [generating, setGenerating] = useState(false);
-  const [error, setError] = useState(true);
+  const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [variation, setVariation] = useState("error");
   const dispatch = useDispatch();
@@ -71,7 +72,7 @@ export default function Home() {
     }
   });
   useEffect(() => {
-    if (matches.length < 5) {
+    if (matches.length < 5 && !generating) {
       generate();
     }
   }, [matches]);
@@ -102,11 +103,12 @@ export default function Home() {
     }
   };
   const generate = async () => {
-    if (matches.length > 5 || !session) {
+    if (matches.length > 3 || !session || generating) {
       return null;
     } else {
       await new Promise((r) => setTimeout(r, 2000));
     }
+    setGenerating(true);
     let naiKey;
     try {
       naiKey = localStorage.getItem("naiToken");
@@ -166,7 +168,7 @@ export default function Home() {
 
     //   console.log(data, error);
     // }
-    setGenerating(!generating);
+    setGenerating(false);
   };
 
   // if (matches.length < 4 && !generating && session && workingKey) {
@@ -178,9 +180,13 @@ export default function Home() {
   return !session ? (
     <div className={styles.homeScree}>
       {error ? (
-        <Alert variant="filled" severity={variation}>
-          {errorMessage}
-        </Alert>
+        <div onClick={() => setError(false)} className={styles.errorContainer}>
+          <ClickAwayListener onClickAway={() => setError(false)}>
+            <Alert variant="filled" severity={variation}>
+              {errorMessage}
+            </Alert>
+          </ClickAwayListener>
+        </div>
       ) : null}
       <Login />
     </div>
@@ -188,9 +194,15 @@ export default function Home() {
     <div className={styles.homeScreen}>
       {error ? (
         <div onClick={() => setError(false)} className={styles.errorContainer}>
-          <Alert variant="filled" severity={variation} className={styles.error}>
-            {errorMessage}
-          </Alert>
+          <ClickAwayListener onClickAway={() => setError(false)}>
+            <Alert
+              variant="filled"
+              severity={variation}
+              className={styles.error}
+            >
+              {errorMessage}
+            </Alert>
+          </ClickAwayListener>
         </div>
       ) : null}
       {loggedIn && match ? (

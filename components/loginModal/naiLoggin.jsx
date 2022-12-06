@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import getNaiAccessToken from "../../utils/misc/important/getNaiAccessToken";
 import { changeNaiKey } from "../../store/user";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+
 export default function NaiLoggin({
   activateNai,
   generate,

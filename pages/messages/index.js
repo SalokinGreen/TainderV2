@@ -14,12 +14,14 @@ import { loggingIn, changeNaiKey } from "../../store/user";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 import axios from "axios";
+import EditingCard from "../../components/editingCard";
 export default function Messages() {
   const [openChat, setOpenChat] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [message, setMessage] = useState("");
   const [generating, setGenerating] = useState(false);
+  const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const messagesEndRef = useRef(null);
   const session = useSession();
@@ -201,6 +203,7 @@ export default function Messages() {
               ? styles.chatroomHeaderNoAvatar
               : styles.chatroomHeader
           }
+          onClick={() => setEditing(!editing)}
         >
           {chat.avatar === "" ? null : (
             <Image
@@ -255,6 +258,8 @@ export default function Messages() {
           </button>
         </form>
       </div>
+      {editing ? <EditingCard chat={chat} setEditing={setEditing} /> : null}
+
       <div className={styles.backGround}></div>
     </div>
   );

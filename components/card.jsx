@@ -63,7 +63,6 @@ export default function Card({ match, generate }) {
       image: match.image,
     });
     uploadMatch();
-    q;
     dispatch(
       setChats({
         uuid: match.id,

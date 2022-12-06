@@ -10,7 +10,7 @@ import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 
 // Store
 import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { likeMatch, dislikeMatch, setChats } from "../store/user";
 import { changeDetails } from "../store/chat";
 // Components
@@ -48,23 +48,150 @@ export default function EditingCard({ chat, setEditing }) {
     img = "/placeholder.png";
   }
   const updateLike = async () => {
-    let { data, error } = await supabase
+    const likes = chat.likes;
+    const { data, error } = await supabase
       .from("chats")
-      .update({ likes: sendChat })
-      .eq({ user_id: session.user.id })
-      .eq({ uuid: chat.id });
+      .update({ likes: likes })
+      .match({ user_id: session.user.id, uuid: chat.id });
     if (error) {
       console.log(error);
     }
+    setSaving(false);
   };
-  const updateDislike = async () => {};
-  const updateAge = async () => {};
-  const updateGender = async () => {};
-  const updateName = async () => {};
-  const updateMe = async () => {};
-  const updateWork = async () => {};
-  const updateHome = async () => {};
-  const updateAttributes = async () => {};
+  const updateDislike = async () => {
+    let { data, error } = await supabase
+      .from("chats")
+      .update({ chat: chat.messages })
+      .match({ user_id: session.user.id, uuid: chat.id });
+    if (error) {
+      console.log(error);
+    }
+    setSaving(false);
+  };
+  const updateAge = async () => {
+    let { data, error } = await supabase
+      .from("chats")
+      .update({ age: chat.age })
+      .match({ user_id: session.user.id, uuid: chat.id });
+    if (error) {
+      console.log(error);
+    }
+    setSaving(false);
+  };
+  const updateGender = async () => {
+    let { data, error } = await supabase
+      .from("chats")
+      .update({ gender: chat.gender })
+      .match({ user_id: session.user.id, uuid: chat.id });
+    if (error) {
+      console.log(error);
+    }
+    setSaving(false);
+  };
+  const updateName = async () => {
+    let { data, error } = await supabase
+      .from("chats")
+      .update({ name: chat.name })
+      .match({ user_id: session.user.id, uuid: chat.id });
+    if (error) {
+      console.log(error);
+    }
+    setSaving(false);
+  };
+  const updateAbout = async () => {
+    let { data, error } = await supabase
+      .from("chats")
+      .update({ about: chat.about })
+      .match({ user_id: session.user.id, uuid: chat.id });
+    if (error) {
+      console.log(error);
+    }
+    setSaving(false);
+  };
+  const updateWork = async () => {
+    let { data, error } = await supabase
+      .from("chats")
+      .update({ work: chat.work })
+      .match({ user_id: session.user.id, uuid: chat.id });
+    if (error) {
+      console.log(error);
+    }
+    setSaving(false);
+  };
+  const updateFrom = async () => {
+    let { data, error } = await supabase
+      .from("chats")
+      .update({ from: chat.from })
+      .match({ user_id: session.user.id, uuid: chat.id });
+    if (error) {
+      console.log(error);
+    }
+    setSaving(false);
+  };
+  const updateAttributes = async () => {
+    let { data, error } = await supabase
+      .from("chats")
+      .update({ attributes: chat.attributes })
+      .match({ user_id: session.user.id, uuid: chat.id });
+    if (error) {
+      console.log(error);
+    }
+    setSaving(false);
+  };
+  useEffect(() => {
+    if (!saving) {
+      setSaving(true);
+      updateLike();
+    }
+  }, [chat.likes]);
+  useEffect(() => {
+    if (!saving) {
+      setSaving(true);
+      updateDislike();
+    }
+  }, [chat.dislikes]);
+  useEffect(() => {
+    if (!saving) {
+      setSaving(true);
+      updateAge();
+    }
+  }, [chat.age]);
+  useEffect(() => {
+    if (!saving) {
+      setSaving(true);
+      updateGender();
+    }
+  }, [chat.gender]);
+  useEffect(() => {
+    if (!saving) {
+      setSaving(true);
+      updateName();
+    }
+  }, [chat.name]);
+  useEffect(() => {
+    if (!saving) {
+      setSaving(true);
+      updateAbout();
+    }
+  }, [chat.about]);
+  useEffect(() => {
+    if (!saving) {
+      setSaving(true);
+      updateWork();
+    }
+  }, [chat.work]);
+  useEffect(() => {
+    if (!saving) {
+      setSaving(true);
+      updateFrom();
+    }
+  }, [chat.from]);
+  useEffect(() => {
+    if (!saving) {
+      setSaving(true);
+      updateAttributes();
+    }
+  }, [chat.attributes]);
   return (
     <ClickAwayListener onClickAway={() => setEditing(false)}>
       <div className={styles.card}>
@@ -206,6 +333,6 @@ export default function EditingCard({ chat, setEditing }) {
           </div>
         </div>
       </div>
-    </ClickAwayListener>  
+    </ClickAwayListener>
   );
 }

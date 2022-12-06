@@ -56,18 +56,28 @@ export default function Test() {
   // button function
   const button = async () => {
     // get avatar urls
-    let naiKey = "";
-    try {
-      naiKey = localStorage.getItem("naiToken");
-      console.log("Got the key");
-    } catch {
-      console.log("No key");
-    }
-    const response = await axios.post("/api/generateChat", {
-      chat: "Hello",
-      naiKey: naiKey,
-    });
-    console.log(response.data);
+    const about = await axios.post(
+      "https://api.novelai.net/ai/generate",
+      {
+        input: "Text generation example.",
+        model: "euterpe-v2",
+        parameters: {
+          use_string: true,
+          temperature: 1,
+          min_length: 10,
+          max_length: 30,
+        },
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IldjR09admZSeW1pcGZyQmlHZmxXeiIsIm5jIjoiUHNLd21YV241UWRUaXREbkNwWlFiIiwiaWF0IjoxNjcwMjg1OTgxLCJleHAiOjE2NzI4Nzc5ODF9.bx0lTZkTAbE_ZExsX2yNoz4kIbmE5RDkoeWRO-oqBsU",
+        },
+      }
+    );
+    console.log(about);
   };
 
   return <button onClick={() => button()}>Test</button>;

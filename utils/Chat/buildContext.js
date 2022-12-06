@@ -17,7 +17,7 @@ export default function buildContext(user, ai, message, type) {
   let reversedChat = _.cloneDeep(startingChat).reverse();
   const newMessageFrom = type === "user" ? `> ${ai.name}:` : `> ${ai.name}:`;
   const newMessage = type === "user" ? `> ${user.name}: ` + message + "\n" : "";
-  let startingContext = `${user.name}\nAge: ${user.age}\nGender: ${user.gender}\nFrom: ${user.from}\nOccupation: ${user.work}\nLikes: ${user.likes}\nDislikes: ${user.dislikes}\nAttributes: ${user.attributes}\nAbout me: ${ai.about}\n----\n${ai.name}\nAge: ${ai.age}\nGender: ${ai.gender}\nFrom: ${ai.from}\nOccupation: ${ai.work}\nLikes: ${ai.likes}\nDislikes: ${ai.dislikes}\nAttributes: ${ai.attributes}\nAbout me: ${ai.about}\n***\n[ This is a chat between ${user.name} and ${ai.name} in a dating app. ]`;
+  let startingContext = `${user.name}\nAge: ${user.age}\nGender: ${user.gender}\nFrom: ${user.from}\nOccupation: ${user.work}\nLikes: ${user.likes}\nDislikes: ${user.dislikes}\nAttributes: ${user.attributes}\nAbout me: ${user.about}\n----\n${ai.name}\nAge: ${ai.age}\nGender: ${ai.gender}\nFrom: ${ai.from}\nOccupation: ${ai.work}\nLikes: ${ai.likes}\nDislikes: ${ai.dislikes}\nAttributes: ${ai.attributes}\nAbout me: ${ai.about}\n***\n[ This is a chat between ${user.name} and ${ai.name} in a dating app. ]`;
   let context = "";
   const contextLength =
     ai.settings.model === "krake"

@@ -65,25 +65,27 @@ export default async function generateCard(
       type: 3,
     });
     // dispatch match to user counter
-    //   const data = response.data;
-    //   const image = data.img === "" ? "" : cleanNaiImgResponse(data.img);
-    //   const match = {
-    //     name: data.input.name,
-    //     age: data.input.age,
-    //     gender: data.input.gender,
-    //     attributes: data.input.attributes,
-    //     from: data.input.from,
-    //     work: data.input.work,
-    //     image: image,
-    //     likes: data.likes.output,
-    //     dislikes: data.dislikes.output,
-    //     about: data.about.output,
-    //     chat: [],
-    //     id: uuidv4(),
-    //   };
-    //   matches.push(match);
+    // const data = response.data;
+    // const image = data.img === "" ? "" : cleanNaiImgResponse(data.img);
+    console.log("AAAAAAAAAAAAAA");
+    console.log(response1);
+    const match = {
+      name: input.name,
+      age: input.age,
+      gender: input.gender,
+      attributes: input.attributes,
+      from: input.from,
+      work: input.work,
+      image: "",
+      likes: response1.data,
+      dislikes: response2.data,
+      about: response3.data,
+      chat: [],
+      id: uuidv4(),
+    };
+    matches.push(match);
+    return matches;
   }
-  console.log(response1, response2, response3);
 }
 // Maybe adding hobbies later
 //{name: 'Alison Grey', age: "20", attributes: 'blonde, blue eyes, white, small, glasses', from: 'america', work: 'student'}

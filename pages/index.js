@@ -69,6 +69,11 @@ export default function Home() {
     ) {
     }
   });
+  useEffect(() => {
+    if (matches.length < 5) {
+      generate();
+    }
+  }, [matches]);
   matches.length > 0 ? (match = matches[0]) : (match = null);
   // const updateMatchesOnDatabase = async () => {
   //   const { data, error } = await supabase
@@ -90,14 +95,14 @@ export default function Home() {
       console.log(error);
       return null;
     }
-    if (!generating && matches.length < 10) {
+    if (!generating && matches.length < 5) {
       setGenerating(true);
       // const numberToGenerate = matches ? 5 - matches.length : 5;
       dispatch(generatingMatches());
       console.log("Generating");
       console.log(naiKey);
       const matchesGenerated = await generateCard(
-        2,
+        1,
         `Bearer ${naiKey}`,
         { minAge: 18, maxAge: 100 },
         {},

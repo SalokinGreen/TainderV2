@@ -214,7 +214,6 @@ export default async function handler(req, res) {
           console.log(error);
           codeWrongAccess = 1;
         });
-      console.log(answer);
       break;
     case 2:
       answer = await axios
@@ -238,7 +237,6 @@ export default async function handler(req, res) {
           console.log(error);
           codeWrongAccess = 1;
         });
-      console.log(answer);
       break;
     default:
       answer = await axios
@@ -262,10 +260,9 @@ export default async function handler(req, res) {
           console.log(error);
           codeWrongAccess = 1;
         });
-      console.log(answer);
       break;
   }
-  res.status(200).json(answer.data);
+  res.status(200).json(answer.data.output);
   // predifine image data for the case where no image is generated
   // let response3 = { data: "" };
   // // generate the likes, dislikes, and about me

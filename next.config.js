@@ -28,7 +28,7 @@ const nextConfig = {
     return [
       {
         // matching all API routes
-        source: "/test/:path*",
+        source: "https://api.novelai.net/ai/generate",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
           { key: "Access-Control-Allow-Origin", value: "*" },

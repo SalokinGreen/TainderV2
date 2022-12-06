@@ -32,8 +32,6 @@ export default async function handler(req, res) {
   }
 
   async function login(email, password) {
-    console.log("Logging in...");
-
     var key = await getAccessKey(email, password);
     // var tokenReq = $.post("https://api.novelai.net/user/login", {
     //   key: key,
@@ -44,7 +42,6 @@ export default async function handler(req, res) {
     // });
     return key;
   }
-  console.log(req.body);
   const data = await login(req.body.email, req.body.password);
 
   const key = await axios

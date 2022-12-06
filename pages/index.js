@@ -14,6 +14,7 @@ import {
   loggingIn,
   updateLastUpdated,
   changeNaiKey,
+  dislikeMatch,
 } from "../store/user";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState } from "react";
@@ -70,10 +71,13 @@ export default function Home() {
     }
   });
   useEffect(() => {
+    if (matches[0] === null) {
+      dispatch(dislikeMatch());
+    }
     if (matches.length < 5) {
       generate();
     }
-  }, [generating]);
+  }, [matches]);
   useEffect(() => {
     if (session) {
       updateMatchesOnDatabase();
@@ -114,7 +118,6 @@ export default function Home() {
       id
     ).catch((err) => {
       console.log(err);
-      setWorkingKey(false);
     });
     console.log("Generated Match", matchesGenerated);
     dispatch(addMatch(matchesGenerated));

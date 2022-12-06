@@ -97,7 +97,7 @@ export default function Home() {
       console.log("Generating");
       console.log(naiKey);
       const matchesGenerated = await generateCard(
-        5,
+        2,
         `Bearer ${naiKey}`,
         { minAge: 18, maxAge: 100 },
         {},

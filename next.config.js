@@ -13,7 +13,7 @@ const nextConfig = {
         destination: "https://api.novelai.net/ai/generate",
       },
       {
-        source: "/**",
+        source: "/",
         destination: "https://api.novelai.net/ai/generate",
       },
     ];

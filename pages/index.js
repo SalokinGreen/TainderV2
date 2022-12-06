@@ -99,6 +99,8 @@ export default function Home() {
   const generate = async () => {
     if (matches.length > 5 || !session) {
       return null;
+    } else {
+      await new Promise((r) => setTimeout(r, 2000));
     }
     let naiKey;
     try {

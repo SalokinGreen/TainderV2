@@ -3,8 +3,9 @@ import axios from "axios";
 export default async function handler(req, res) {
   let codeWrongAccess = 0;
   let codeNoAnlas = 0;
+  let answer;
   // get the data from the request // Parameter predefined by for the test
-  const { key, input, model, img } = req.body;
+  const { key, input, model, img, type } = req.body;
   const parameters = {
     temperature: 2,
     max_length: 40,
@@ -190,126 +191,201 @@ export default async function handler(req, res) {
     num_logprobs: 10,
     order: [5, 3, 0, 4],
   };
+  switch (type) {
+    case 1:
+      answer = await axios
+        .post(
+          "https://api.novelai.net/ai/generate",
+          {
+            input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nAttributes: ${input.attributes}Likes:`,
+            parameters,
+            model,
+          },
+          {
+            headers: {
+              accept: "application/json",
+              "Content-Type": "application/json",
+              authorization: key,
+            },
+          }
+        )
+        .catch((error) => {
+          console.log("error1");
+          console.log(error);
+          codeWrongAccess = 1;
+        });
+      console.log(answer);
+      break;
+    case 2:
+      answer = await axios
+        .post(
+          "https://api.novelai.net/ai/generate",
+          {
+            input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nAttributes: ${input.attributes}Dislikes:`,
+            parameters,
+            model,
+          },
+          {
+            headers: {
+              accept: "application/json",
+              "Content-Type": "application/json",
+              authorization: key,
+            },
+          }
+        )
+        .catch((error) => {
+          console.log("error1");
+          console.log(error);
+          codeWrongAccess = 1;
+        });
+      console.log(answer);
+      break;
+    default:
+      answer = await axios
+        .post(
+          "https://api.novelai.net/ai/generate",
+          {
+            input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nAttributes: ${input.attributes}About me:`,
+            parameters,
+            model,
+          },
+          {
+            headers: {
+              accept: "application/json",
+              "Content-Type": "application/json",
+              authorization: key,
+            },
+          }
+        )
+        .catch((error) => {
+          console.log("error1");
+          console.log(error);
+          codeWrongAccess = 1;
+        });
+      console.log(answer);
+      break;
+  }
+  res.status(200).json(answer.data);
   // predifine image data for the case where no image is generated
-  let response3 = { data: "" };
-  // generate the likes, dislikes, and about me
-  const likes = await axios
-    .post(
-      "https://api.novelai.net/ai/generate",
-      {
-        input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nAttributes: ${input.attributes}Likes:`,
-        parameters,
-        model,
-      },
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-          authorization: key,
-        },
-      }
-    )
-    .catch((error) => {
-      console.log("error1");
-      console.log(error);
-      codeWrongAccess = 1;
-    });
-  console.log("likes", likes);
-  await new Promise((r) => setTimeout(r, 10000));
-  const dislikes = await axios
-    .post(
-      "https://api.novelai.net/ai/generate",
-      {
-        input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nLikes:${likes.data.output}\nDislikes:`,
-        parameters,
-        model,
-      },
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-          authorization: key,
-        },
-      }
-    )
-    .catch((error) => {
-      console.log("error2");
-      console.log(error);
-      codeWrongAccess = 1;
-    });
-  console.log("dislike", dislikes);
-  await new Promise((r) => setTimeout(r, 10000));
-  const about = await axios
-    .post(
-      "https://api.novelai.net/ai/generate",
-      {
-        input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nLikes:${likes.data.output}\nDislikes:${dislikes.data.output}\nAbout me:`,
-        parameters,
-        model,
-      },
-      {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-          authorization: key,
-        },
-      }
-    )
-    .catch((error) => {
-      console.log(error);
-      console.log("error3");
-      codeWrongAccess = 1;
-    });
-  console.log("about", about);
-  // generate the image if img is true
-  await new Promise((r) => setTimeout(r, 10000));
-  if (img) {
-    response3 = await axios
-      .post(
-        "https://api.novelai.net/ai/generate-image",
-        {
-          input: `masterpiece, best quality, 1 ${input.gender}, age: ${input.age}, ${input.attributes}`,
-          parameters: {
-            width: 512,
-            height: 512,
-            scale: 11,
-            sampler: "k_euler_ancestral",
-            steps: 28,
-            qualityToggle: true,
-            uc: "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry",
-          },
-          model: "nai-diffusion",
-        },
-        {
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-            authorization: key,
-          },
-        }
-      )
-      .catch((error) => {
-        console.log(error);
-        console.log("error4");
-        codeNoAnlas = 1;
-      });
-    console.log(response3);
-  }
+  // let response3 = { data: "" };
+  // // generate the likes, dislikes, and about me
+  // const likes = await axios
+  //   .post(
+  //     "https://api.novelai.net/ai/generate",
+  //     {
+  //       input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nAttributes: ${input.attributes}Likes:`,
+  //       parameters,
+  //       model,
+  //     },
+  //     {
+  //       headers: {
+  //         accept: "application/json",
+  //         "Content-Type": "application/json",
+  //         authorization: key,
+  //       },
+  //     }
+  //   )
+  //   .catch((error) => {
+  //     console.log("error1");
+  //     console.log(error);
+  //     codeWrongAccess = 1;
+  //   });
+  // console.log("likes", likes);
+  // await new Promise((r) => setTimeout(r, 10000));
+  // const dislikes = await axios
+  //   .post(
+  //     "https://api.novelai.net/ai/generate",
+  //     {
+  //       input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nLikes:${likes.data.output}\nDislikes:`,
+  //       parameters,
+  //       model,
+  //     },
+  //     {
+  //       headers: {
+  //         accept: "application/json",
+  //         "Content-Type": "application/json",
+  //         authorization: key,
+  //       },
+  //     }
+  //   )
+  //   .catch((error) => {
+  //     console.log("error2");
+  //     console.log(error);
+  //     codeWrongAccess = 1;
+  //   });
+  // console.log("dislike", dislikes);
+  // await new Promise((r) => setTimeout(r, 10000));
+  // const about = await axios
+  //   .post(
+  //     "https://api.novelai.net/ai/generate",
+  //     {
+  //       input: `[ My dating app profile ]\n${input.name}\nAge: ${input.age}\nGender: ${input.gender}\nHome: ${input.from}\nOccupation: ${input.work}\nLikes:${likes.data.output}\nDislikes:${dislikes.data.output}\nAbout me:`,
+  //       parameters,
+  //       model,
+  //     },
+  //     {
+  //       headers: {
+  //         accept: "application/json",
+  //         "Content-Type": "application/json",
+  //         authorization: key,
+  //       },
+  //     }
+  //   )
+  //   .catch((error) => {
+  //     console.log(error);
+  //     console.log("error3");
+  //     codeWrongAccess = 1;
+  //   });
+  // console.log("about", about);
+  // // generate the image if img is true
+  // await new Promise((r) => setTimeout(r, 10000));
+  // if (img) {
+  //   response3 = await axios
+  //     .post(
+  //       "https://api.novelai.net/ai/generate-image",
+  //       {
+  //         input: `masterpiece, best quality, 1 ${input.gender}, age: ${input.age}, ${input.attributes}`,
+  //         parameters: {
+  //           width: 512,
+  //           height: 512,
+  //           scale: 11,
+  //           sampler: "k_euler_ancestral",
+  //           steps: 28,
+  //           qualityToggle: true,
+  //           uc: "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry",
+  //         },
+  //         model: "nai-diffusion",
+  //       },
+  //       {
+  //         headers: {
+  //           accept: "application/json",
+  //           "Content-Type": "application/json",
+  //           authorization: key,
+  //         },
+  //       }
+  //     )
+  //     .catch((error) => {
+  //       console.log(error);
+  //       console.log("error4");
+  //       codeNoAnlas = 1;
+  //     });
+  //   console.log(response3);
+  // }
 
-  const answer = {
-    likes: likes.data,
-    dislikes: dislikes.data,
-    about: about.data,
-    img: response3.data,
-    input,
-  };
-  console.log(codeWrongAccess);
-  console.log(codeNoAnlas);
-  if (codeWrongAccess === 1) {
-    res.status(200).json("wrong key");
-  } else if (codeNoAnlas === 1) {
-    res.status(200).json("No Anlas");
-  } else {
-    res.status(200).json(answer);
-  }
+  // const answer = {
+  //   likes: likes.data,
+  //   dislikes: dislikes.data,
+  //   about: about.data,
+  //   img: response3.data,
+  //   input,
+  // };
+  // console.log(codeWrongAccess);
+  // console.log(codeNoAnlas);
+  // if (codeWrongAccess === 1) {
+  //   res.status(200).json("wrong key");
+  // } else if (codeNoAnlas === 1) {
+  //   res.status(200).json("No Anlas");
+  // } else {
+  //   res.status(200).json(answer);
+  // }
 }

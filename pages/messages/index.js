@@ -12,6 +12,7 @@ import { getAvatar, addMessage, changeChat } from "../../store/chat";
 import { MdSettings, MdChatBubble } from "react-icons/md";
 import { loggingIn, changeNaiKey } from "../../store/user";
 import { v4 as uuidv4 } from "uuid";
+import ChatSettings from "../../components/chatSettings";
 import _ from "lodash";
 import axios from "axios";
 import EditingCard from "../../components/editingCard";
@@ -23,6 +24,7 @@ export default function Messages() {
   const [generating, setGenerating] = useState(false);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [open, setOpen] = useState(false);
   const messagesEndRef = useRef(null);
   let formRef = useRef(null);
   const session = useSession();
@@ -277,7 +279,9 @@ export default function Messages() {
         </form>
       </div>
       {editing ? <EditingCard chat={chat} setEditing={setEditing} /> : null}
-
+      {openSettings ? (
+        <ChatSettings open={openSettings} setOpen={setOpenSettings} />
+      ) : null}
       <div className={styles.backGround}></div>
     </div>
   );

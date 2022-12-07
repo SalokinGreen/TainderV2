@@ -84,6 +84,7 @@
     margin-right: 10px;
     overflow: hidden;
     padding: 0 5vw 0 3px;
+    color: white
     
 
     
@@ -93,6 +94,7 @@
     font-weight: bold;
     margin-right: 10px;
     overflow: hidden;
+    color: white
 }
 .chatroomBody{
     display: flex;

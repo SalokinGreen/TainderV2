@@ -9,17 +9,35 @@ import Switch from "@mui/material/Switch";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { setGenerateImages } from "../store/user";
+import { setGenerateImages, removeChat } from "../store/user";
+import { deletePartner } from "../store/chat";
 import styles from "../styles/settingsMenu.module.css";
 export default function ChatSettings({ open, setOpen, activateNai, generate }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const chat = useSelector((state) => state.chat);
   const settings = user.settings;
+  const session = useSession();
   const supabase = useSupabaseClient();
 
-  const logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) console.log("error", error);
+  const remove = async () => {
+    const { data, error } = await supabase.storage
+      .from("avatars")
+      .remove([`${session.user.id}/${chat.id}.png`]);
+    if (error) {
+      console.log("error", error);
+      return error;
+    }
+    const { error: error2 } = await supabase
+      .from("chats")
+      .delete()
+      .match({ uuid: chat.id, user_id: session.user.id });
+    if (error2) {
+      console.log("error", error2);
+      return error2;
+    }
+    dispatch(removeChat(chat.id));
+    dispatch(deletePartner());
   };
   // const logout = () => {
   //   localStorage.removeItem("id");
@@ -38,28 +56,12 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
       </div>
       <div className={styles.menuSettingsContent}>
         <div className={styles.menuSettingsContentTitle}>General</div>
-        <div className={styles.menuSettingsContentItem}>
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={user.settings.generateImages}
-                  onChange={() => dispatch(setGenerateImages())}
-                />
-              }
-              label="Generate Images"
-              labelPlacement="start"
-            />
-          </FormGroup>
-        </div>
-        <div className={styles.menuSettingsContentTitle}>NAI Loggin</div>
-        <div className={styles.menuSettingsContentItem}>
-          <NaiLoggin activateNai={activateNai} generate={generate} />
-        </div>
+        <div className={styles.menuSettingsContentItem}></div>
+
         <div className={styles.menuSettingsContentTitle}>Misc</div>
         <div className={styles.menuSettingsContentItem}>
-          <Button variant="contained" color="error" onClick={() => logout()}>
-            LOGOUT
+          <Button variant="contained" color="error" onClick={() => remove()}>
+            Delete
           </Button>
         </div>
       </div>

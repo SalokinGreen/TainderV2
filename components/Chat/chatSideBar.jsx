@@ -2,9 +2,11 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import TextField from "@mui/material/TextField";
 import styles from "../../styles/chatSideBar.module.css";
 import ChatBox from "./chatBox";
+import { useEffect } from "react";
 export default function ChatList({ openChat, setOpenChat, generate }) {
   const [search, setSearch] = useState("");
   const chats = useSelector((state) => state.user.chats);
@@ -12,6 +14,18 @@ export default function ChatList({ openChat, setOpenChat, generate }) {
   const filteredChats = chats.filter((chat) => {
     return chat.name.toLowerCase().includes(search.toLowerCase());
   });
+  const session = useSession();
+  const supabase = useSupabaseClient();
+  useEffect(() => {
+    updateChats();
+  }, [chats]);
+  const updateChats = async () => {
+    let { data, error } = await supabase
+      .from("users")
+      .update({ chats: sendChat })
+      .match({ user_id: session.user.id });
+    error ? console.log(error) : null;
+  };
   const dispatch = useDispatch();
   const router = useRouter();
   const handleAdd = () => {

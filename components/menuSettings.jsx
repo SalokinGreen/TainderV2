@@ -63,7 +63,7 @@ export default function MenuSettings({
             />
           </FormGroup>
         </div>
-        <div className={styles.menuSettingsContentTitle}>NAI Loggin</div>
+        <div className={styles.menuSettingsContentTitle}>NAI Login</div>
         <div className={styles.menuSettingsContentItem}>
           <NaiLoggin
             activateNai={activateNai}

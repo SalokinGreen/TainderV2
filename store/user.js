@@ -106,6 +106,9 @@ export const userCounter = createSlice({
           break;
       }
     },
+    removeChat: (state, action) => {
+      state.chats = state.chats.filter((chat) => chat.uuid !== action.payload);
+    },
   },
 });
 
@@ -121,6 +124,7 @@ export const {
   setGenerateImages,
   setChats,
   changeDetails,
+  removeChat,
 } = userCounter.actions;
 
 export const selectUserCounter = (state) => state.settingsCounter.value;

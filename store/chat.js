@@ -69,6 +69,22 @@ export const chatCounter = createSlice({
           break;
       }
     },
+    deletePartner: (state) => {
+      state.id = "";
+      state.name = "";
+      state.about = "";
+      state.avatar = "";
+      state.age = "";
+      state.attributes = "";
+      state.messages = [];
+      state.dislikes = "";
+      state.likes = "";
+      state.from = "";
+      state.work = "";
+      state.user_id = "";
+      state.settings = { model: "euterpe-v2" };
+      state.gotAvatar = false;
+    },
   },
 });
 
@@ -78,6 +94,7 @@ export const {
   addMessage,
   changeChat,
   changeDetails,
+  deletePartner,
 } = chatCounter.actions;
 
 export const selectChatCounter = (state) => state.chatCounter.value;

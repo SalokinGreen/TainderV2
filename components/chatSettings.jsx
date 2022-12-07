@@ -41,6 +41,12 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
     }
     dispatch(removeChat(chat.id));
     dispatch(deletePartner());
+
+    let { data, error } = await supabase
+      .from("users")
+      .update({ chats: user.chats })
+      .match({ user_id: session.user.id });
+    error ? console.log(error) : null;
   };
   // const logout = () => {
   //   localStorage.removeItem("id");

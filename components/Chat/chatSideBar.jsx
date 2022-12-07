@@ -16,16 +16,7 @@ export default function ChatList({ openChat, setOpenChat, generate }) {
   });
   const session = useSession();
   const supabase = useSupabaseClient();
-  useEffect(() => {
-    updateChats();
-  }, [chats]);
-  const updateChats = async () => {
-    let { data, error } = await supabase
-      .from("users")
-      .update({ chats: chats })
-      .match({ user_id: session.user.id });
-    error ? console.log(error) : null;
-  };
+
   const dispatch = useDispatch();
   const router = useRouter();
   const handleAdd = () => {

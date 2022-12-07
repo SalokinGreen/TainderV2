@@ -109,6 +109,38 @@ export const userCounter = createSlice({
     removeChat: (state, action) => {
       state.chats = state.chats.filter((chat) => chat.uuid !== action.payload);
     },
+    rerollMatch: (state, action) => {
+      switch (action.payload.type) {
+        case "name":
+          state.matches[0].name = action.payload.value;
+          break;
+        case "age":
+          state.matches[0].age = action.payload.value;
+          break;
+        case "about":
+          state.matches[0].about = action.payload.value;
+          break;
+        case "from":
+          state.matches[0].from = action.payload.value;
+          break;
+        case "work":
+          state.matches[0].work = action.payload.value;
+          break;
+        case "likes":
+          state.matches[0].likes = action.payload.value;
+          break;
+        case "dislikes":
+          state.matches[0].dislikes = action.payload.value;
+          break;
+        case "attributes":
+          state.matches[0].attributes = action.payload.value;
+          break;
+
+        default:
+          state.matches[0].gender = action.payload.value;
+          break;
+      }
+    },
   },
 });
 
@@ -125,6 +157,7 @@ export const {
   setChats,
   changeDetails,
   removeChat,
+  rerollMatch,
 } = userCounter.actions;
 
 export const selectUserCounter = (state) => state.settingsCounter.value;

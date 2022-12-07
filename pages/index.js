@@ -9,7 +9,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { decode } from "base64-arraybuffer";
 import Alert from "@mui/material/Alert";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-
 import ChatList from "../components/Chat/chatSideBar";
 import {
   addMatch,
@@ -162,23 +161,10 @@ export default function Home() {
     console.log("Generated Match", matchesGenerated);
     dispatch(addMatch(matchesGenerated));
     console.log("Done Generating");
-    // if (session) {
-    //   const { data, error } = await supabase
-    //     .from("users")
-    //     .update({ matches: matches })
-    //     .match({ user_id: session.user.id });
 
-    //   console.log(data, error);
-    // }
     setGenerating(false);
   };
 
-  // if (matches.length < 4 && !generating && session && workingKey) {
-  //   setGenerating(true);
-  //   generate();
-  // } else {
-  //   null;
-  // }
   return !session ? (
     <div className={styles.homeScree}>
       {error ? (

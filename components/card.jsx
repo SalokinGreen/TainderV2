@@ -6,11 +6,16 @@ import axios from "axios";
 import { decode } from "base64-arraybuffer";
 
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import getAge from "../utils/Card/Details/getAge";
+import getAttributes from "../utils/Card/Details/getAttributes";
+import getCountry from "../utils/Card/Details/getCountry";
+import getName from "../utils/Card/Details/getName";
+import getWork from "../utils/Card/Details/getWork";
 
 // Store
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
-import { likeMatch, dislikeMatch, setChats } from "../store/user";
+import { likeMatch, dislikeMatch, setChats, rerollMatch } from "../store/user";
 // Components
 import { MdWork } from "react-icons/md";
 import {
@@ -33,6 +38,7 @@ import cleanNaiImgResponse from "../utils/misc/cleanNaiImgResponse";
 export default function Card({ match, generate }) {
   let sendMatch;
   const [cardDetails, setCardDetails] = useState(false);
+  const [rerolling, setRerolling] = useState(false);
   const session = useSession();
   const supabase = useSupabaseClient();
   const chats = useSelector((state) => state.user.chats);
@@ -133,14 +139,93 @@ export default function Card({ match, generate }) {
       console.log(data);
     }
   };
+  const reroll = async (type) => {
+    let naiKey;
+    try {
+      naiKey = localStorage.getItem("naiToken");
+      console.log("Got the key");
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+    switch (type) {
+      case "age":
+        dispatch(rerollMatch({ type: "age", value: getAge(18, 100) }));
+        break;
+      case "gender":
+        // 50/50 chance
+        const gender = Math.random() < 0.5 ? "Man" : "Woman";
+        dispatch(rerollMatch({ type: "gender", value: gender }));
+        break;
+      case "name":
+        const existingGender = matches[0].gender === "Man" ? "man" : "woman";
+        dispatch(rerollMatch({ type: "name", value: getName(existingGender) }));
+        break;
+
+      case "work":
+        dispatch(rerollMatch({ type: "work", value: getWork() }));
+        break;
+      case "from":
+        dispatch(rerollMatch({ type: "from", value: getCountry() }));
+        break;
+      case "attributes":
+        dispatch(rerollMatch({ type: "attributes", value: getAttributes() }));
+        break;
+      case "likes":
+        dispatch(rerollMatch({ type: "likes", value: "Generating..." }));
+        const likes = await axios.post("api/reroll", {
+          type: "likes",
+          input: match,
+          key: naiKey,
+          model: "euterpe-v2",
+        });
+        console.log(likes);
+        dispatch(rerollMatch({ type: "likes", value: likes.data.output }));
+        break;
+      case "dislikes":
+        dispatch(rerollMatch({ type: "dislikes", value: "Generating..." }));
+        const dislikes = await axios.post("api/reroll", {
+          type: "dislikes",
+          input: match,
+          key: naiKey,
+          model: "euterpe-v2",
+        });
+        console.log(dislikes);
+        dispatch(
+          rerollMatch({ type: "dislikes", value: dislikes.data.output })
+        );
+        break;
+      case "about":
+        dispatch(rerollMatch({ type: "about", value: "Generating..." }));
+        const about = await axios.post("api/reroll", {
+          type: "about",
+          input: match,
+          key: naiKey,
+          model: "euterpe-v2",
+        });
+        console.log(about);
+        dispatch(rerollMatch({ type: "about", value: about.data.output }));
+        break;
+      default:
+        break;
+    }
+  };
   return (
     <div className={styles.card}>
       <div className={styles.header}>
         <div className={styles.gender}>
-          <BsFillMoonStarsFill className={styles.icon} /> {match.age}
+          <BsFillMoonStarsFill
+            className={styles.icon}
+            onClick={() => reroll("age")}
+          />{" "}
+          {match.age}
         </div>
         <div className={styles.gender}>
-          {match.gender} <BsGenderTrans className={styles.icon} />
+          {match.gender}{" "}
+          <BsGenderTrans
+            className={styles.icon}
+            onClick={() => reroll("gender")}
+          />
         </div>
       </div>
       <div className={styles.image}>
@@ -152,18 +237,26 @@ export default function Card({ match, generate }) {
 
       <div className={styles.cardContent}>
         <div className={styles.titleContainer}>
-          <p className={styles.title}>{match.name}</p>
+          <p className={styles.title} onClick={() => reroll("name")}>
+            {match.name}
+          </p>
         </div>
         <div className={styles.likes}>
-          <AiFillLike className={styles.icon} />
+          <AiFillLike className={styles.icon} onClick={() => reroll("likes")} />
           <p>{match.likes}</p>
         </div>
         <div className={styles.dislikes}>
-          <AiFillDislike className={styles.icon} />
+          <AiFillDislike
+            className={styles.icon}
+            onClick={() => reroll("dislikes")}
+          />
           <p>{match.dislikes}</p>
         </div>
         <div className={styles.dislikes}>
-          <SiAboutdotme className={styles.icon} />
+          <SiAboutdotme
+            className={styles.icon}
+            onClick={() => reroll("about")}
+          />
           <p>{match.about}</p>
         </div>
       </div>
@@ -189,13 +282,18 @@ export default function Card({ match, generate }) {
           }}
         >
           <div className={styles.details}>
-            <MdWork className={styles.icon} /> <p>{match.work}</p>
+            <MdWork className={styles.icon} onClick={() => reroll("work")} />{" "}
+            <p>{match.work}</p>
           </div>
           <div className={styles.details}>
-            <BiWorld className={styles.icon} /> <p>{match.from}</p>
+            <BiWorld className={styles.icon} onClick={() => reroll("from")} />{" "}
+            <p>{match.from}</p>
           </div>
           <div className={styles.details}>
-            <AiFillStar className={styles.icon} />
+            <AiFillStar
+              className={styles.icon}
+              onClick={() => reroll("attributes")}
+            />
             <p>{match.attributes}</p>
           </div>
         </div>

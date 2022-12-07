@@ -22,7 +22,7 @@ export default function ChatList({ openChat, setOpenChat, generate }) {
   const updateChats = async () => {
     let { data, error } = await supabase
       .from("users")
-      .update({ chats: sendChat })
+      .update({ chats: chats })
       .match({ user_id: session.user.id });
     error ? console.log(error) : null;
   };

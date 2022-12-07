@@ -21,13 +21,17 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
   const supabase = useSupabaseClient();
 
   const remove = async () => {
-    const { data, error } = await supabase.storage
-      .from("avatars")
-      .remove([`${session.user.id}/${chat.id}.png`]);
-    if (error) {
-      console.log("error", error);
-      return error;
+    if (chats.avatar !== "") {
+    } else {
+      const { data, error } = await supabase.storage
+        .from("avatars")
+        .remove([`${session.user.id}/${chat.id}.png`]);
+      if (error) {
+        console.log("error", error);
+        return error;
+      }
     }
+
     const { error: error2 } = await supabase
       .from("chats")
       .delete()

@@ -135,11 +135,20 @@ export const userCounter = createSlice({
         case "attributes":
           state.matches[0].attributes = action.payload.value;
           break;
-
+        case "image":
+          state.matches[0].image = action.payload.value;
+          break;
         default:
           state.matches[0].gender = action.payload.value;
           break;
       }
+    },
+    updateChatAvatar: (state, action) => {
+      state.chats.map((chat) => {
+        if (chat.uuid === action.payload.uuid) {
+          chat.image = action.payload.avatar;
+        }
+      });
     },
   },
 });
@@ -158,6 +167,7 @@ export const {
   changeDetails,
   removeChat,
   rerollMatch,
+  updateChatAvatar,
 } = userCounter.actions;
 
 export const selectUserCounter = (state) => state.settingsCounter.value;

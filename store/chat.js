@@ -85,6 +85,40 @@ export const chatCounter = createSlice({
       state.settings = { model: "euterpe-v2" };
       state.gotAvatar = false;
     },
+    rerollChat: (state, action) => {
+      switch (action.payload.type) {
+        case "name":
+          state.name = action.payload.value;
+          break;
+        case "age":
+          state.age = action.payload.value;
+          break;
+        case "about":
+          state.about = action.payload.value;
+          break;
+        case "from":
+          state.from = action.payload.value;
+          break;
+        case "work":
+          state.work = action.payload.value;
+          break;
+        case "likes":
+          state.likes = action.payload.value;
+          break;
+        case "dislikes":
+          state.dislikes = action.payload.value;
+          break;
+        case "attributes":
+          state.attributes = action.payload.value;
+          break;
+        case "image":
+          state.avatar = action.payload.value;
+          break;
+        default:
+          state.gender = action.payload.value;
+          break;
+      }
+    },
   },
 });
 
@@ -95,6 +129,7 @@ export const {
   changeChat,
   changeDetails,
   deletePartner,
+  rerollChat,
 } = chatCounter.actions;
 
 export const selectChatCounter = (state) => state.chatCounter.value;

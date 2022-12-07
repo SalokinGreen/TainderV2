@@ -7,12 +7,17 @@ import { decode } from "base64-arraybuffer";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import getAge from "../utils/Card/Details/getAge";
+import getAttributes from "../utils/Card/Details/getAttributes";
+import getCountry from "../utils/Card/Details/getCountry";
+import getName from "../utils/Card/Details/getName";
+import getWork from "../utils/Card/Details/getWork";
 
 // Store
+import { updateChatAvatar } from "../store/user";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import { likeMatch, dislikeMatch, setChats } from "../store/user";
-import { changeDetails } from "../store/chat";
+import { changeDetails, rerollChat } from "../store/chat";
 // Components
 import { MdWork } from "react-icons/md";
 import {
@@ -37,6 +42,7 @@ import { style } from "@mui/system";
 export default function EditingCard({ chat, setEditing }) {
   const [cardDetails, setCardDetails] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [rerolling, setRerolling] = useState(false);
   const session = useSession();
   const supabase = useSupabaseClient();
   const dispatch = useDispatch();
@@ -138,6 +144,16 @@ export default function EditingCard({ chat, setEditing }) {
     }
     setSaving(false);
   };
+  const updateImage = async () => {
+    let { data, error } = await supabase
+      .from("chats")
+      .update({ image: chat.avatar })
+      .match({ user_id: session.user.id, uuid: chat.id });
+    if (error) {
+      console.log(error);
+    }
+    setSaving(false);
+  };
   useEffect(() => {
     if (!saving) {
       setSaving(true);
@@ -192,12 +208,149 @@ export default function EditingCard({ chat, setEditing }) {
       updateAttributes();
     }
   }, [chat.attributes]);
+  useEffect(() => {
+    if (!saving) {
+      setSaving(true);
+      updateImage();
+    }
+  }, [chat.avatar]);
+
+  const reroll = async (type) => {
+    let naiKey;
+    try {
+      naiKey = localStorage.getItem("naiToken");
+      console.log("Got the key");
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+    setRerolling(true);
+    switch (type) {
+      case "age":
+        dispatch(rerollChat({ type: "age", value: getAge(18, 100) }));
+        break;
+      case "gender":
+        // 50/50 chance
+        const gender = Math.random() < 0.5 ? "Man" : "Woman";
+        dispatch(rerollChat({ type: "gender", value: gender }));
+        break;
+      case "name":
+        const existingGender = chat.gender === "Man" ? "man" : "woman";
+        dispatch(rerollChat({ type: "name", value: getName(existingGender) }));
+        break;
+
+      case "work":
+        dispatch(rerollChat({ type: "work", value: getWork() }));
+        break;
+      case "from":
+        dispatch(rerollChat({ type: "from", value: getCountry() }));
+        break;
+      case "attributes":
+        dispatch(rerollChat({ type: "attributes", value: getAttributes() }));
+        break;
+      case "likes":
+        dispatch(rerollChat({ type: "likes", value: "Generating..." }));
+        const likes = await axios.post("api/reroll", {
+          type: "likes",
+          input: chat,
+          key: naiKey,
+          model: "euterpe-v2",
+        });
+        console.log(likes);
+        dispatch(rerollChat({ type: "likes", value: likes.data.output }));
+        break;
+      case "dislikes":
+        dispatch(rerollChat({ type: "dislikes", value: "Generating..." }));
+        const dislikes = await axios.post("api/reroll", {
+          type: "dislikes",
+          input: chat,
+          key: naiKey,
+          model: "euterpe-v2",
+        });
+        console.log(dislikes);
+        dispatch(rerollChat({ type: "dislikes", value: dislikes.data.output }));
+        break;
+      case "about":
+        dispatch(rerollChat({ type: "about", value: "Generating..." }));
+        const about = await axios.post("api/reroll", {
+          type: "about",
+          input: chat,
+          key: naiKey,
+          model: "euterpe-v2",
+        });
+        console.log(about);
+        dispatch(rerollChat({ type: "about", value: about.data.output }));
+        break;
+      case "image":
+        dispatch(rerollChat({ type: "image", value: "/loading.gif" }));
+        const image = await axios.post("api/reroll", {
+          type: "image",
+          input: chat,
+          key: naiKey,
+          model: "euterpe-v2",
+        });
+        console.log(image);
+        const cleanImage = cleanNaiImgResponse(image.data);
+        if (chat.avatar === "") {
+          let { data, error } = await supabase.storage
+            .from("avatars")
+            .upload(`${session.user.id}/${chat.id}.png`, decode(cleanImage), {
+              contentType: "image/png",
+            });
+          error ? console.log(error) : null;
+          const { data: data2, error: error2 } = supabase.storage
+            .from("avatars")
+            .getPublicUrl(`${session.user.id}/${chat.id}.png`);
+          if (data2) {
+            dispatch(rerollChat({ type: "image", value: data2.publicUrl }));
+            dispatch(
+              updateChatAvatar({
+                uuid: chat.id,
+                avatar: data2.publicUrl + `?${new Date()}`,
+              })
+            );
+          } else {
+            console.log(error2);
+          }
+        } else {
+          const imageUrl = chat.avatar;
+          const { data: data2, error: error2 } = await supabase.storage
+            .from("avatars")
+            .remove([`${session.user.id}/${chat.id}.png`]);
+          error2 ? console.log(error2) : console.log(data2);
+          const { data, error } = await supabase.storage
+            .from("avatars")
+            .upload(`${session.user.id}/${chat.id}.png`, decode(cleanImage), {
+              contentType: "image/png",
+            });
+          error ? console.log(error) : console.log(data);
+
+          dispatch(
+            rerollChat({ type: "image", value: imageUrl + `?${new Date()}` })
+          );
+          dispatch(
+            updateChatAvatar({
+              uuid: chat.id,
+              avatar: imageUrl + `?${new Date()}`,
+            })
+          );
+        }
+        break;
+      default:
+        console.log("Reroll error");
+        break;
+    }
+    setRerolling(false);
+  };
   return (
     <ClickAwayListener onClickAway={() => setEditing(false)}>
       <div className={styles.card}>
         <div className={styles.header}>
           <div className={styles.gender}>
-            <BsFillMoonStarsFill className={styles.icon} />{" "}
+            <BsFillMoonStarsFill
+              className={styles.icon}
+              onClick={() => reroll("age")}
+            />{" "}
             <input
               value={chat.age}
               className={styles.ageInput}
@@ -216,11 +369,17 @@ export default function EditingCard({ chat, setEditing }) {
                 )
               }
             ></input>{" "}
-            <BsGenderTrans className={styles.icon} />
+            <BsGenderTrans
+              className={styles.icon}
+              onClick={() => reroll("gender")}
+            />
           </div>
         </div>
         <div className={styles.image}>
-          <figure className={styles.image}>
+          <figure
+            className={styles.image}
+            onClick={rerolling ? null : () => reroll("image")}
+          >
             {/* <img src={word.value} alt="Placeholder image" /> */}
             <Image src={img} alt="Placeholder image" width={512} height={512} />
           </figure>
@@ -237,7 +396,10 @@ export default function EditingCard({ chat, setEditing }) {
             ></textarea>
           </div>
           <div className={styles.likes}>
-            <AiFillLike className={styles.icon} />
+            <AiFillLike
+              className={styles.icon}
+              onClick={rerolling ? null : () => reroll("likes")}
+            />
             <textarea
               value={chat.likes}
               className={styles.Inputs}
@@ -249,7 +411,10 @@ export default function EditingCard({ chat, setEditing }) {
             ></textarea>
           </div>
           <div className={styles.dislikes}>
-            <AiFillDislike className={styles.icon} />
+            <AiFillDislike
+              className={styles.icon}
+              onClick={rerolling ? null : () => reroll("dislikes")}
+            />
             <textarea
               value={chat.dislikes}
               className={styles.Inputs}
@@ -261,7 +426,10 @@ export default function EditingCard({ chat, setEditing }) {
             ></textarea>
           </div>
           <div className={styles.dislikes}>
-            <SiAboutdotme className={styles.icon} />
+            <SiAboutdotme
+              className={styles.icon}
+              onClick={rerolling ? null : () => reroll("about")}
+            />
             <textarea
               value={chat.about}
               className={styles.Inputs}
@@ -295,7 +463,7 @@ export default function EditingCard({ chat, setEditing }) {
             }}
           >
             <div className={styles.details}>
-              <MdWork className={styles.icon} />{" "}
+              <MdWork className={styles.icon} onClick={() => reroll("work")} />{" "}
               <textarea
                 value={chat.work}
                 className={styles.Inputs}
@@ -307,7 +475,7 @@ export default function EditingCard({ chat, setEditing }) {
               ></textarea>
             </div>
             <div className={styles.details}>
-              <BiWorld className={styles.icon} />{" "}
+              <BiWorld className={styles.icon} onClick={() => reroll("from")} />{" "}
               <textarea
                 value={chat.from}
                 className={styles.Inputs}
@@ -319,7 +487,10 @@ export default function EditingCard({ chat, setEditing }) {
               ></textarea>
             </div>
             <div className={styles.details}>
-              <AiFillStar className={styles.icon} />
+              <AiFillStar
+                className={styles.icon}
+                onClick={() => reroll("attributes")}
+              />
               <textarea
                 value={chat.attributes}
                 className={styles.Inputs}

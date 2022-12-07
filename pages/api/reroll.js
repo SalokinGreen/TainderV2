@@ -257,6 +257,33 @@ export default async function handler(req, res) {
         });
       res.status(200).json(about.data);
       break;
+
+    case "image":
+      const image = await axios.post(
+        "https://api.novelai.net/ai/generate-image",
+        {
+          input: `masterpiece, best quality, 1 ${input.gender}, age: ${input.age}, ${input.attributes}`,
+          parameters: {
+            width: 512,
+            height: 512,
+            scale: 11,
+            sampler: "k_euler_ancestral",
+            steps: 28,
+            qualityToggle: true,
+            uc: "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry",
+          },
+          model: "nai-diffusion",
+        },
+        {
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+            authorization: `Bearer ${key}`,
+          },
+        }
+      );
+      res.status(200).json(image.data);
+      break;
     default:
       break;
   }

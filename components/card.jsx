@@ -4,7 +4,7 @@ import styles from "../styles/card.module.css";
 // Libraries
 import axios from "axios";
 import { decode } from "base64-arraybuffer";
-
+import cleanNaiImgResponse from "../utils/misc/cleanNaiImgResponse";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import getAge from "../utils/Card/Details/getAge";
 import getAttributes from "../utils/Card/Details/getAttributes";
@@ -31,7 +31,6 @@ import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { SiAboutdotme } from "react-icons/si";
 import Image from "next/image";
 // Utils
-import cleanNaiImgResponse from "../utils/misc/cleanNaiImgResponse";
 
 // Dating Profile like card
 
@@ -148,6 +147,7 @@ export default function Card({ match, generate }) {
       console.log(error);
       return null;
     }
+    setRerolling(true);
     switch (type) {
       case "age":
         dispatch(rerollMatch({ type: "age", value: getAge(18, 100) }));
@@ -206,9 +206,54 @@ export default function Card({ match, generate }) {
         console.log(about);
         dispatch(rerollMatch({ type: "about", value: about.data.output }));
         break;
+      case "image":
+        dispatch(rerollMatch({ type: "image", value: "/loading.gif" }));
+        const image = await axios.post("api/reroll", {
+          type: "image",
+          input: match,
+          key: naiKey,
+          model: "euterpe-v2",
+        });
+        console.log(image);
+        const cleanImage = cleanNaiImgResponse(image.data);
+        if (match.image === "") {
+          let { data, error } = await supabase.storage
+            .from("avatars")
+            .upload(`${session.user.id}/${match.id}.png`, decode(cleanImage), {
+              contentType: "image/png",
+            });
+          error ? console.log(error) : null;
+          const { data: data2, error: error2 } = supabase.storage
+            .from("avatars")
+            .getPublicUrl(`${session.user.id}/${match.id}.png`);
+          if (data2) {
+            dispatch(rerollMatch({ type: "image", value: data2.publicUrl }));
+          } else {
+            console.log(error2);
+          }
+        } else {
+          const imageUrl = match.image;
+          const { data: data2, error: error2 } = await supabase.storage
+            .from("avatars")
+            .remove([`${session.user.id}/${match.id}.png`]);
+          error2 ? console.log(error2) : console.log(data2);
+          const { data, error } = await supabase.storage
+            .from("avatars")
+            .upload(`${session.user.id}/${match.id}.png`, decode(cleanImage), {
+              contentType: "image/png",
+            });
+          error ? console.log(error) : console.log(data);
+
+          dispatch(
+            rerollMatch({ type: "image", value: imageUrl + `?${new Date()}` })
+          );
+        }
+        break;
       default:
+        console.log("Reroll error");
         break;
     }
+    setRerolling(false);
   };
   return (
     <div className={styles.card}>
@@ -229,7 +274,10 @@ export default function Card({ match, generate }) {
         </div>
       </div>
       <div className={styles.image}>
-        <figure className={styles.image} onClick={() => getImages()}>
+        <figure
+          className={styles.image}
+          onClick={rerolling ? null : () => reroll("image")}
+        >
           {/* <img src={word.value} alt="Placeholder image" /> */}
           <Image src={img} alt="Placeholder image" width={512} height={512} />
         </figure>
@@ -298,8 +346,8 @@ export default function Card({ match, generate }) {
           </div>
         </div>
         <div className={styles.choice}>
-          <GiBrokenHeart onClick={() => dislike()} />
-          <GiHearts onClick={() => like()} />
+          <GiBrokenHeart onClick={rerolling ? null : () => dislike()} />
+          <GiHearts onClick={rerolling ? null : () => like()} />
         </div>
       </div>
     </div>

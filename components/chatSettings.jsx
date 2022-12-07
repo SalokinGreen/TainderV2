@@ -21,7 +21,7 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
   const supabase = useSupabaseClient();
 
   const remove = async () => {
-    if (chats.avatar !== "") {
+    if (chat.avatar !== "") {
     } else {
       const { data, error } = await supabase.storage
         .from("avatars")

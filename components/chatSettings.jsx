@@ -22,7 +22,6 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
 
   const remove = async () => {
     if (chat.avatar !== "") {
-    } else {
       const { data, error } = await supabase.storage
         .from("avatars")
         .remove([`${session.user.id}/${chat.id}.png`]);
@@ -37,8 +36,8 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
       .delete()
       .match({ uuid: chat.id, user_id: session.user.id });
     if (error2) {
-      console.log("error", error2);
-      return error2;
+      // console.log("error", error2);
+      // return error2;
     }
     dispatch(removeChat(chat.id));
     dispatch(deletePartner());

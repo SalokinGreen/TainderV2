@@ -9,6 +9,7 @@ import Switch from "@mui/material/Switch";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+
 import { setGenerateImages, removeChat } from "../store/user";
 import { deletePartner } from "../store/chat";
 import styles from "../styles/settingsMenu.module.css";
@@ -207,8 +208,7 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
   const user = useSelector((state) => state.user);
   const chat = useSelector((state) => state.chat);
   const settings = user.settings.global;
-  let presets = [defaultEuterpe, ...settings];
-
+  const [normal, setNormal] = useState(false);
   const session = useSession();
   const supabase = useSupabaseClient();
 
@@ -240,10 +240,7 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
       .match({ user_id: session.user.id });
     error ? console.log(error) : null;
   };
-  // const logout = () => {
-  //   localStorage.removeItem("id");
-  //   window.location.reload(false);
-  // };
+
   return (
     <div className={open ? styles.menuSettingsOpen : styles.menuSettings}>
       <div className={styles.menuSettingsHeader}>
@@ -261,7 +258,7 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
           <Button
             variant="contained"
             color="error"
-            onClick={() => console.log(presets)}
+            onClick={() => console.log(presetsq)}
           >
             log
           </Button>

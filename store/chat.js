@@ -28,6 +28,8 @@ export const chatCounter = createSlice({
       state.gender = action.payload.gender;
       state.avatar = action.payload.image;
       state.settings = action.payload.settings;
+      state.memory = action.payload.memory;
+      state.model = action.payload.model;
     },
     getAvatar: (state) => {
       state.gotAvatar = true;

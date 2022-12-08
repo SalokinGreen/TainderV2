@@ -46,6 +46,7 @@ export default function EditingCard({ chat, setEditing }) {
   const session = useSession();
   const supabase = useSupabaseClient();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
   let img;
   if (chat.avatar.length > 0) {
@@ -306,14 +307,22 @@ export default function EditingCard({ chat, setEditing }) {
             dispatch(
               updateChatAvatar({
                 uuid: chat.id,
-                avatar: data2.publicUrl + `?${new Date()}`,
+                avatar: data2.publicUrl,
               })
             );
+            let { data: data3, error: error3 } = await supabase
+              .from("users")
+              .update({ chats: user.chats })
+              .match({ user_id: session.user.id });
+            error3 ? console.log(error3) : console.log(data3);
           } else {
             console.log(error2);
           }
         } else {
-          const imageUrl = chat.avatar;
+          const { data: data4, error: error4 } = supabase.storage
+            .from("avatars")
+            .getPublicUrl(`${session.user.id}/${chat.id}.png`);
+          const imageUrl = data4.publicUrl;
           const { data: data2, error: error2 } = await supabase.storage
             .from("avatars")
             .remove([`${session.user.id}/${chat.id}.png`]);
@@ -334,6 +343,11 @@ export default function EditingCard({ chat, setEditing }) {
               avatar: imageUrl + `?${new Date()}`,
             })
           );
+          let { data: data3, error: error3 } = await supabase
+            .from("users")
+            .update({ chats: user.chats })
+            .match({ user_id: session.user.id });
+          error3 ? console.log(error3) : console.log(data3);
         }
         break;
       default:
@@ -398,6 +412,7 @@ export default function EditingCard({ chat, setEditing }) {
                 dispatch(changeDetails({ type: "name", value: e.target.value }))
               }
               onKeyDown={handleKeyDown}
+              onFocus={handleKeyDown}
             ></textarea>
           </div>
           <div className={styles.likes}>
@@ -414,6 +429,7 @@ export default function EditingCard({ chat, setEditing }) {
                 )
               }
               onKeyDown={handleKeyDown}
+              onFocus={handleKeyDown}
             ></textarea>
           </div>
           <div className={styles.dislikes}>

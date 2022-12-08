@@ -3,7 +3,7 @@ import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSelector, useDispatch } from "react-redux";
-import { replacePartner } from "../../store/chat";
+import chat, { replacePartner } from "../../store/chat";
 import _ from "lodash";
 import Image from "next/image";
 export default function ChatBox({ name, id, ogImage }) {
@@ -41,7 +41,7 @@ export default function ChatBox({ name, id, ogImage }) {
   return (
     <div className={styles.chatBox} onClick={() => goToChat()}>
       <Image
-        src={image}
+        src={ogImage === "" ? "/placeholder.png" : ogImage}
         width={50}
         height={50}
         className={styles.chatBoxAvatar}

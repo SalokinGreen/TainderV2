@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
-
+import _ from "lodash";
 export const userCounter = createSlice({
   name: "userCounter",
   initialState: {
@@ -144,11 +144,12 @@ export const userCounter = createSlice({
       }
     },
     updateChatAvatar: (state, action) => {
-      state.chats.map((chat) => {
-        if (chat.uuid === action.payload.uuid) {
-          chat.image = action.payload.avatar;
-        }
-      });
+      // get the index of chat with uuid
+      // set the image to the new image
+      const index = state.chats.findIndex(
+        (chat) => chat.uuid === action.payload.uuid
+      );
+      state.chats[index].image = action.payload.avatar;
     },
   },
 });

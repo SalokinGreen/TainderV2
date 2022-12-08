@@ -16,7 +16,6 @@ export default function ChatList({ openChat, setOpenChat, generate }) {
   });
   const session = useSession();
   const supabase = useSupabaseClient();
-
   const dispatch = useDispatch();
   const router = useRouter();
   const handleAdd = () => {

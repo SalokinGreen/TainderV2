@@ -68,7 +68,7 @@ export default function EditingCard({ chat, setEditing }) {
   const updateDislike = async () => {
     let { data, error } = await supabase
       .from("chats")
-      .update({ chat: chat.messages })
+      .update({ dislikes: chat.dislikes })
       .match({ user_id: session.user.id, uuid: chat.id });
     if (error) {
       console.log(error);

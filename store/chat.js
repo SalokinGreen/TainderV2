@@ -27,6 +27,7 @@ export const chatCounter = createSlice({
       state.user_id = action.payload.user_id;
       state.gender = action.payload.gender;
       state.avatar = action.payload.image;
+      state.settings = action.payload.settings;
     },
     getAvatar: (state) => {
       state.gotAvatar = true;

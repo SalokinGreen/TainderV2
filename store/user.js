@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import _ from "lodash";
+
 export const userCounter = createSlice({
   name: "userCounter",
   initialState: {

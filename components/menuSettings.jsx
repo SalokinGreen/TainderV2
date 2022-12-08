@@ -9,7 +9,7 @@ import Switch from "@mui/material/Switch";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { setGenerateImages } from "../store/user";
+import { setGenerateImages, restoreUserChats } from "../store/user";
 import styles from "../styles/settingsMenu.module.css";
 import EditingCard from "./editingCard";
 import UserCard from "./userCard";
@@ -23,11 +23,26 @@ export default function MenuSettings({
   setVariation,
   setEditing,
 }) {
+  const session = useSession();
+  const supabase = useSupabaseClient();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const settings = user.settings;
-  const supabase = useSupabaseClient();
-
+  const restoreChats = async () => {
+    let chats = [];
+    const { data, error } = await supabase
+      .from("chats")
+      .select("*")
+      .eq("user_id", session.user.id);
+    if (error) {
+      console.log(error);
+    } else {
+      data.forEach((chat) => {
+        chats.push({ name: chat.name, uuid: chat.uuid, image: chat.image });
+      });
+      dispatch(restoreUserChats(chats));
+    }
+  };
   const logout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) console.log("error", error);
@@ -84,6 +99,15 @@ export default function MenuSettings({
             onClick={() => setEditing(true)}
           >
             Profile
+          </Button>
+        </div>
+        <div className={styles.menuSettingsContentItem}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => restoreChats()}
+          >
+            Restore existing chats
           </Button>
         </div>
       </div>

@@ -151,6 +151,9 @@ export const userCounter = createSlice({
       );
       state.chats[index].image = action.payload.avatar;
     },
+    restoreUserChats: (state, action) => {
+      state.chats = action.payload;
+    },
   },
 });
 
@@ -169,6 +172,7 @@ export const {
   removeChat,
   rerollMatch,
   updateChatAvatar,
+  restoreUserChats,
 } = userCounter.actions;
 
 export const selectUserCounter = (state) => state.settingsCounter.value;

@@ -56,6 +56,11 @@ export default function Test() {
   // button function
   const button = async () => {
     // get avatar urls
+    const { data, error } = await supabase
+      .from("chats")
+      .select("*")
+      .eq("user_id", session.user.id);
+    error ? console.log(error) : console.log(data);
   };
 
   return <button onClick={() => button()}>Test</button>;

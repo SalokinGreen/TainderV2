@@ -342,6 +342,10 @@ export default function EditingCard({ chat, setEditing }) {
     }
     setRerolling(false);
   };
+  const handleKeyDown = (e) => {
+    e.target.style.height = "inherit";
+    e.target.style.height = `${e.target.scrollHeight}px`;
+  };
   return (
     <ClickAwayListener onClickAway={() => setEditing(false)}>
       <div className={styles.card}>
@@ -393,6 +397,7 @@ export default function EditingCard({ chat, setEditing }) {
               onChange={(e) =>
                 dispatch(changeDetails({ type: "name", value: e.target.value }))
               }
+              onKeyDown={handleKeyDown}
             ></textarea>
           </div>
           <div className={styles.likes}>
@@ -408,6 +413,7 @@ export default function EditingCard({ chat, setEditing }) {
                   changeDetails({ type: "likes", value: e.target.value })
                 )
               }
+              onKeyDown={handleKeyDown}
             ></textarea>
           </div>
           <div className={styles.dislikes}>
@@ -423,6 +429,8 @@ export default function EditingCard({ chat, setEditing }) {
                   changeDetails({ type: "dislikes", value: e.target.value })
                 )
               }
+              onKeyDown={handleKeyDown}
+              onFocus={handleKeyDown}
             ></textarea>
           </div>
           <div className={styles.dislikes}>
@@ -438,6 +446,8 @@ export default function EditingCard({ chat, setEditing }) {
                   changeDetails({ type: "about", value: e.target.value })
                 )
               }
+              onKeyDown={handleKeyDown}
+              onFocus={handleKeyDown}
             ></textarea>
           </div>
         </div>
@@ -472,6 +482,8 @@ export default function EditingCard({ chat, setEditing }) {
                     changeDetails({ type: "work", value: e.target.value })
                   )
                 }
+                onKeyDown={handleKeyDown}
+                onFocus={handleKeyDown}
               ></textarea>
             </div>
             <div className={styles.details}>
@@ -484,6 +496,8 @@ export default function EditingCard({ chat, setEditing }) {
                     changeDetails({ type: "from", value: e.target.value })
                   )
                 }
+                onKeyDown={handleKeyDown}
+                onFocus={handleKeyDown}
               ></textarea>
             </div>
             <div className={styles.details}>
@@ -499,6 +513,8 @@ export default function EditingCard({ chat, setEditing }) {
                     changeDetails({ type: "attributes", value: e.target.value })
                   )
                 }
+                onKeyDown={handleKeyDown}
+                onFocus={handleKeyDown}
               ></textarea>
             </div>
           </div>

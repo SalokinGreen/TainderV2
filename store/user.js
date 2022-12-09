@@ -29,6 +29,7 @@ export const userCounter = createSlice({
       image: "https://i.imgur.com/Unkf3Xe.png",
       attributes: "cool, tall, nice",
     },
+    presets: [],
   },
   reducers: {
     turnCard: (state) => {
@@ -60,6 +61,7 @@ export const userCounter = createSlice({
       action.payload.profile === null
         ? null
         : (state.profile = action.payload.profile);
+      state.presets = action.payload.presets;
     },
     updateLastUpdated: (state) => {
       state.lastUpdated = Date.now();
@@ -155,6 +157,9 @@ export const userCounter = createSlice({
     restoreUserChats: (state, action) => {
       state.chats = action.payload;
     },
+    addPreset: (state, action) => {
+      state.presets.push(action.payload);
+    },
   },
 });
 
@@ -174,6 +179,7 @@ export const {
   rerollMatch,
   updateChatAvatar,
   restoreUserChats,
+  addPreset,
 } = userCounter.actions;
 
 export const selectUserCounter = (state) => state.settingsCounter.value;

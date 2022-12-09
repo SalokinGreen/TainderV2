@@ -20,7 +20,7 @@ export default function buildContext(user, ai, message, type) {
   let startingContext = `${user.name}\nAge: ${user.age}\nGender: ${user.gender}\nFrom: ${user.from}\nOccupation: ${user.work}\nLikes: ${user.likes}\nDislikes: ${user.dislikes}\nAttributes: ${user.attributes}\nAbout me: ${user.about}\n----\n${ai.name}\nAge: ${ai.age}\nGender: ${ai.gender}\nFrom: ${ai.from}\nOccupation: ${ai.work}\nLikes: ${ai.likes}\nDislikes: ${ai.dislikes}\nAttributes: ${ai.attributes}\nAbout me: ${ai.about}\n***\n[ This is a chat between ${user.name} and ${ai.name} in a dating app. ]`;
   let context = "";
   const contextLength =
-    ai.model === "krake"
+    ai.model === "krake-v2"
       ? PileTokenizer.encode(startingContext).length +
         PileTokenizer.encode(newMessageFrom).length +
         PileTokenizer.encode(newMessage).length
@@ -34,7 +34,7 @@ export default function buildContext(user, ai, message, type) {
     } else {
       line = `> ${ai.name}: ` + message.message + "\n";
     }
-    if (ai.model === "krake") {
+    if (ai.model === "krake-v2") {
       if (
         TokenizerService.encode(context).length +
           TokenizerService.encode(line).length <

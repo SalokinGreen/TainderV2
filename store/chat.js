@@ -30,6 +30,7 @@ export const chatCounter = createSlice({
       state.settings = action.payload.settings;
       state.memory = action.payload.memory;
       state.model = action.payload.model;
+      state.preset = action.payload.preset;
     },
     getAvatar: (state) => {
       state.gotAvatar = true;
@@ -87,6 +88,7 @@ export const chatCounter = createSlice({
       state.user_id = "";
       state.settings = { model: "euterpe-v2" };
       state.gotAvatar = false;
+      state.preset = "default";
     },
     rerollChat: (state, action) => {
       switch (action.payload.type) {
@@ -122,6 +124,9 @@ export const chatCounter = createSlice({
           break;
       }
     },
+    changeModel: (state) => {
+      state.model = state.model === "euterpe-v2" ? "krake-v2" : "euterpe-v2";
+    },
   },
 });
 
@@ -133,6 +138,7 @@ export const {
   changeDetails,
   deletePartner,
   rerollChat,
+  changeModel,
 } = chatCounter.actions;
 
 export const selectChatCounter = (state) => state.chatCounter.value;

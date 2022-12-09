@@ -3,15 +3,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import Parameters from "./parameters";
+import { v4 as uuidv4 } from "uuid";
 import { MdSettings, MdChatBubble } from "react-icons/md";
 import NaiLoggin from "./loginModal/naiLoggin";
 import Switch from "@mui/material/Switch";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-
-import { setGenerateImages, removeChat } from "../store/user";
-import { deletePartner } from "../store/chat";
+import Popover from "@mui/material/Popover";
+import { setGenerateImages, removeChat, addPreset } from "../store/user";
+import { deletePartner, changeModel } from "../store/chat";
 import styles from "../styles/settingsMenu.module.css";
 const defaultEuterpe = {
   name: "default",
@@ -203,6 +204,14 @@ const defaultEuterpe = {
     order: [1, 0, 3],
   },
 };
+const defaultKrake = {
+  name: "Default Krake",
+  id: "default",
+  parameters: {
+    temperature: 0.9,
+    max_length: 40,
+    min_length: 1,
+    top_k: 1000,
     top_a: 0.072,
     typical_p: 0.98,
     tail_free_sampling: 0.997,

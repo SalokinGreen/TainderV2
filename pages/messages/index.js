@@ -697,7 +697,10 @@ export default function Messages() {
     } catch {
       console.log("No key");
     }
-    const preset = chat.model === "euterpe-v2" ? defaultEuterpe : defaultKrake;
+    let preset;
+    if (chat.preset === "default") {
+      preset = chat.model === "euterpe-v2" ? defaultEuterpe : defaultKrake;
+    }
     const response = await axios.post("/api/generateChat", {
       chat: buildContext(user.profile, chat, message, type),
       naiKey: naiKey,

@@ -714,7 +714,9 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
           + New Preset
         </div>
         {user.presets.map((presets) => (
-          <div className={styles.model}>{presets.name}</div>
+          <div className={styles.model} key={presets.id}>
+            {presets.name}
+          </div>
         ))}
       </Popover>
     </div>

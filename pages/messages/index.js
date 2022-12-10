@@ -590,7 +590,8 @@ export default function Messages() {
     }
   });
   useEffect(() => {
-    scrollToBottom();
+    editing ? null : scrollToBottom();
+
     if (session) {
       saveChat();
     }
@@ -598,15 +599,15 @@ export default function Messages() {
   useEffect(() => {
     if (message.includes("\n")) {
       setMessage("");
-      scrollToBottom();
+      editing ? null : scrollToBottom();
     }
   }, [message]);
+
   const chatting = async (e) => {
     try {
       e.preventDefault();
     } catch {}
 
-    console.log(generating);
     let exists;
     let id;
     let from;
@@ -616,78 +617,73 @@ export default function Messages() {
       (message) => message.id !== lastMessage.id
     );
     setMessage("");
-
-    if (generating) {
-      return null;
-    } else {
-      switch (true) {
-        case sendMessage.includes("/d"):
-          // remove last message from chat
-          dispatch(changeChat(newMessages));
-          break;
-        case sendMessage.includes("/ai"):
+    setGenerating(true);
+    switch (true) {
+      case sendMessage.includes("/d"):
+        // remove last message from chat
+        dispatch(changeChat(newMessages));
+        break;
+      case sendMessage.includes("/ai"):
+        id = uuidv4();
+        exists = _.find(chat.messages, { id: id });
+        if (exists) {
           id = uuidv4();
+          exists = _.find(chat.messages, { id: id });
+        }
+        dispatch(
+          addMessage({
+            message: sendMessage.replace("/ai", ""),
+            from: "ai",
+            id: id,
+          })
+        );
+        scrollToBottom();
+        break;
+      case (sendMessage.match(/^\s*$/) || []).length > 0:
+        generate("ai");
+        break;
+      case sendMessage.includes("/r"):
+        sendMessage = "";
+        dispatch(changeChat(newMessages));
+        generate("retry");
+        break;
+      case sendMessage.includes("/e"):
+        dispatch(changeChat(newMessages));
+        from = lastMessage.from === "ai" ? "ai" : "user";
+        id = uuidv4();
+        exists = _.find(chat.messages, { id: id });
+        if (exists) {
+          id = uuidv4();
+          exists = _.find(chat.messages, { id: id });
+        }
+        dispatch(
+          addMessage({
+            message: sendMessage.replace("/e", ""),
+            from: from,
+            id: id,
+          })
+        );
+        break;
+      default:
+        id = uuidv4();
+        // Check if id exists in chat with lodash
+        if (sendMessage !== "") {
           exists = _.find(chat.messages, { id: id });
           if (exists) {
             id = uuidv4();
             exists = _.find(chat.messages, { id: id });
           }
-          dispatch(
-            addMessage({
-              message: sendMessage.replace("/ai", ""),
-              from: "ai",
-              id: id,
-            })
-          );
-          scrollToBottom();
-          break;
-        case (sendMessage.match(/^\s*$/) || []).length > 0:
-          generate("ai");
-          break;
-        case sendMessage.includes("/r"):
-          sendMessage = "";
-          dispatch(changeChat(newMessages));
-          console.log();
-          generate("retry");
-          break;
-        case sendMessage.includes("/e"):
-          dispatch(changeChat(newMessages));
-          from = lastMessage.from === "ai" ? "ai" : "user";
-          id = uuidv4();
-          exists = _.find(chat.messages, { id: id });
-          if (exists) {
-            id = uuidv4();
-            exists = _.find(chat.messages, { id: id });
-          }
-          dispatch(
-            addMessage({
-              message: sendMessage.replace("/e", ""),
-              from: from,
-              id: id,
-            })
-          );
-          break;
-        default:
-          setGenerating(true);
-          id = uuidv4();
-          // Check if id exists in chat with lodash
-          if (sendMessage !== "") {
-            exists = _.find(chat.messages, { id: id });
-            if (exists) {
-              id = uuidv4();
-              exists = _.find(chat.messages, { id: id });
-            }
-            dispatch(
-              addMessage({ message: sendMessage, from: "user", id: id })
-            );
-          }
-          generate("user");
-          break;
-      }
-      setGenerating(false);
+          dispatch(addMessage({ message: sendMessage, from: "user", id: id }));
+        }
+        generate("user");
+        break;
     }
   };
+  useEffect(() => {
+    scrollToBottom(), [generating, chat.messages];
+  });
   const generate = async (type) => {
+    scrollToBottom();
     let naiKey = "";
     let id;
     let exists;
@@ -700,13 +696,15 @@ export default function Messages() {
     let preset;
     if (chat.preset === "default") {
       preset = chat.model === "euterpe-v2" ? defaultEuterpe : defaultKrake;
+    } else {
+      const index = _.findIndex(user.presets, { id: chat.preset });
+      preset = user.presets[index];
     }
     const response = await axios.post("/api/generateChat", {
       chat: buildContext(user.profile, chat, message, type),
       naiKey: naiKey,
       parameters: preset.parameters,
     });
-    console.log(response.data);
 
     id = uuidv4();
     exists = _.find(chat.messages, { id: id });
@@ -788,6 +786,17 @@ export default function Messages() {
               </div>
             );
           })}
+          {generating ? (
+            <Image
+              src={"/typing.gif"}
+              width={50}
+              height={40}
+              className={styles.typing}
+              alt="typing"
+              ref={messagesEndRef}
+            ></Image>
+          ) : null}
+
           <div ref={messagesEndRef} className={styles.chatAnker} />
         </div>
         <form
@@ -808,6 +817,7 @@ export default function Messages() {
               generating ? styles.Generating : styles.chatroomFooterSendButton
             }
             type="submit"
+            onClick={chatting}
           >
             {">"}
           </button>

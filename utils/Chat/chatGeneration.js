@@ -187,7 +187,6 @@ import axios from "axios";
 //   order: [1, 0, 3],
 // };
 export default async function chatGeneration(chat, naiKey, parameters) {
-  console.log("Before gen");
   const response = await axios.post(
     "https://api.novelai.net/ai/generate",
     {
@@ -203,7 +202,5 @@ export default async function chatGeneration(chat, naiKey, parameters) {
       },
     }
   );
-  console.log("After gen");
-  console.log(response);
   return response.data.output;
 }

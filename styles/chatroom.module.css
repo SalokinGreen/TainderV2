@@ -213,7 +213,22 @@
 
 
 }
+.typing {
+    display: flex;
+    flex-direction: row;
+    justify-self: baseline;
+    align-self: baseline;
+    margin: 10px 0 0 10px;
+    /* padding: 10px; */
+    border-radius: 10px;
+    background-color: #177e6f;
+    color: #fff;
+    word-wrap: break-word;
+    max-width: 60%;
+    font-size: large;
 
+
+}
 .messageUser {
     display: flex;
     flex-direction: row-reverse;

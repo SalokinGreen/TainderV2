@@ -1,12 +1,19 @@
 import { useSelector, useDispatch } from "react-redux";
+import { changePreset } from "../store/user";
 import styles from "../styles/parameters.module.css";
 import Stack from "@mui/material/Stack";
 import Slider from "@mui/material/Slider";
 import { Typography } from "@mui/material/Typography";
-export default function Parameters() {
+import { useEffect } from "react";
+export default function Parameters({ index, defaultPreset }) {
   const user = useSelector((state) => state.user);
   const chat = useSelector((state) => state.chat);
+  const dispatch = useDispatch();
+  let preset = chat.preset === "default" ? defaultPreset : user.presets[index];
   const disabled = chat.preset === "default" ? true : false;
+  useEffect(() => {
+    preset = chat.preset === "default" ? defaultPreset : user.presets[index];
+  }, [chat.preset]);
   return (
     <div className={styles.parameters}>
       <div className={styles.general}>
@@ -27,6 +34,16 @@ export default function Parameters() {
               min={0.1}
               className={styles.number}
               steps={0.1}
+              value={preset.parameters.temperature}
+              onChange={(e) => {
+                dispatch(
+                  changePreset({
+                    index: index,
+                    change: "temperature",
+                    value: e.target.value,
+                  })
+                );
+              }}
               disabled={disabled}
             />
             <div className={styles.numberOrder}>
@@ -38,13 +55,23 @@ export default function Parameters() {
                 className={styles.number}
                 steps={0.1}
                 disabled={disabled}
+                value={preset.order.temperature.order}
               />
             </div>
           </div>
           <Slider
-            defaultValue={1}
             className={styles.slider}
             valueLabelDisplay="auto"
+            value={preset.parameters.temperature}
+            onChange={(e) => {
+              dispatch(
+                changePreset({
+                  index: index,
+                  change: "temperature",
+                  value: e.target.value,
+                })
+              );
+            }}
             min={0.1}
             max={3}
             step={0.1}
@@ -64,16 +91,35 @@ export default function Parameters() {
               className={styles.number}
               steps={1}
               disabled={disabled}
+              value={preset.parameters.max_length}
+              onChange={(e) => {
+                dispatch(
+                  changePreset({
+                    index: index,
+                    change: "max_length",
+                    value: e.target.value,
+                  })
+                );
+              }}
             />
           </div>
           <Slider
-            defaultValue={1}
             className={styles.slider}
             valueLabelDisplay="auto"
             min={0.1}
             max={3}
             step={0.1}
             disabled={disabled}
+            value={preset.parameters.max_length}
+            onChange={(e) => {
+              dispatch(
+                changePreset({
+                  index: index,
+                  change: "max_length",
+                  value: e.target.value,
+                })
+              );
+            }}
           />
         </div>
         <div className={styles.part}>
@@ -89,25 +135,44 @@ export default function Parameters() {
               className={styles.number}
               steps={0.1}
               disabled={disabled}
+              value={preset.parameters.repetition_penalty}
+              onChange={(e) => {
+                dispatch(
+                  changePreset({
+                    index: index,
+                    change: "repetition_penalty",
+                    value: e.target.value,
+                  })
+                );
+              }}
             />
           </div>
           <Slider
-            defaultValue={1}
             className={styles.slider}
             valueLabelDisplay="auto"
             min={0.1}
             max={3}
             step={0.1}
             disabled={disabled}
+            value={preset.parameters.repetition_penalty}
+            onChange={(e) => {
+              dispatch(
+                changePreset({
+                  index: index,
+                  change: "repetition_penalty",
+                  value: e.target.value,
+                })
+              );
+            }}
           />
         </div>
-        <h3>Avanced</h3>
+        <h3>Advanced</h3>
         <h5>Sampling</h5>
         <i className={styles.description}>
           Turn the order to 0 to disable sampling.
         </i>
         <div className={styles.part}>
-          <h5 className={styles.title}>Top K</h5>
+          <h5 className={styles.title}>Nucleaus</h5>
           <div className={styles.numberContainer}>
             <input
               type="number"
@@ -116,6 +181,16 @@ export default function Parameters() {
               className={styles.number}
               steps={0.1}
               disabled={disabled}
+              value={preset.parameters.top_k}
+              onChange={(e) => {
+                dispatch(
+                  changePreset({
+                    index: index,
+                    change: "top_k",
+                    value: e.target.value,
+                  })
+                );
+              }}
             />
             <div className={styles.numberOrder}>
               Order
@@ -126,6 +201,7 @@ export default function Parameters() {
                 className={styles.number}
                 steps={0.1}
                 disabled={disabled}
+                value={preset.order.top_k.order}
               />
             </div>
           </div>
@@ -137,17 +213,37 @@ export default function Parameters() {
             max={3}
             step={0.1}
             disabled={disabled}
+            value={preset.parameters.top_k}
+            onChange={(e) => {
+              dispatch(
+                changePreset({
+                  index: index,
+                  change: "top_k",
+                  value: e.target.value,
+                })
+              );
+            }}
           />
           <div className={styles.part}>
             <h5 className={styles.title}>Top-A</h5>
             <div className={styles.numberContainer}>
               <input
                 type="number"
-                max={3}
-                min={0.1}
+                max={1}
+                min={0.001}
                 className={styles.number}
-                steps={0.1}
+                steps={0.01}
                 disabled={disabled}
+                value={preset.parameters.top_a}
+                onChange={(e) => {
+                  dispatch(
+                    changePreset({
+                      index: index,
+                      change: "top_a",
+                      value: e.target.value,
+                    })
+                  );
+                }}
               />
               <div className={styles.numberOrder}>
                 Order
@@ -158,17 +254,27 @@ export default function Parameters() {
                   className={styles.number}
                   steps={0.1}
                   disabled={disabled}
+                  value={preset.order.top_a.order}
                 />
               </div>
             </div>
             <Slider
-              defaultValue={1}
               className={styles.slider}
               valueLabelDisplay="auto"
-              min={0.1}
-              max={3}
-              step={0.1}
+              max={1}
+              min={0.001}
+              steps={0.001}
               disabled={disabled}
+              value={preset.parameters.top_a}
+              onChange={(e) => {
+                dispatch(
+                  changePreset({
+                    index: index,
+                    change: "top_a",
+                    value: e.target.value,
+                  })
+                );
+              }}
             />
           </div>
         </div>
@@ -182,6 +288,16 @@ export default function Parameters() {
               className={styles.number}
               steps={0.1}
               disabled={disabled}
+              value={preset.parameters.tail_free_sampling}
+              onChange={(e) => {
+                dispatch(
+                  changePreset({
+                    index: index,
+                    change: "tail_free_sampling",
+                    value: e.target.value,
+                  })
+                );
+              }}
             />
             <div className={styles.numberOrder}>
               Order
@@ -192,17 +308,27 @@ export default function Parameters() {
                 className={styles.number}
                 steps={0.1}
                 disabled={disabled}
+                value={preset.order.tfs.order}
               />
             </div>
           </div>
           <Slider
-            defaultValue={1}
             className={styles.slider}
             valueLabelDisplay="auto"
-            min={0.1}
-            max={3}
-            step={0.1}
+            max={1}
+            min={0.001}
+            steps={0.001}
             disabled={disabled}
+            value={preset.parameters.tail_free_sampling}
+            onChange={(e) => {
+              dispatch(
+                changePreset({
+                  index: index,
+                  change: "tail_free_sampling",
+                  value: e.target.value,
+                })
+              );
+            }}
           />
         </div>
         <div className={styles.part}>
@@ -215,6 +341,16 @@ export default function Parameters() {
               className={styles.number}
               steps={0.1}
               disabled={disabled}
+              value={preset.parameters.typical_p}
+              onChange={(e) => {
+                dispatch(
+                  changePreset({
+                    index: index,
+                    change: "typical_p",
+                    value: e.target.value,
+                  })
+                );
+              }}
             />
 
             <div className={styles.numberOrder}>
@@ -226,50 +362,27 @@ export default function Parameters() {
                 className={styles.number}
                 steps={0.1}
                 disabled={disabled}
+                value={preset.order.typical_p.order}
               />
             </div>
           </div>
           <Slider
-            defaultValue={1}
             className={styles.slider}
             valueLabelDisplay="auto"
-            min={0.1}
-            max={3}
-            step={0.1}
+            max={1}
+            min={0.001}
+            steps={0.001}
             disabled={disabled}
-          />
-        </div>
-        <div className={styles.part}>
-          <h5 className={styles.title}>Nucleaus</h5>
-          <div className={styles.numberContainer}>
-            <input
-              type="number"
-              max={3}
-              min={0.1}
-              className={styles.number}
-              steps={0.1}
-              disabled={disabled}
-            />
-            <div className={styles.numberOrder}>
-              Order
-              <input
-                type="number"
-                max={3}
-                min={0.1}
-                className={styles.number}
-                steps={0.1}
-                disabled={disabled}
-              />
-            </div>
-          </div>
-          <Slider
-            defaultValue={1}
-            className={styles.slider}
-            valueLabelDisplay="auto"
-            min={0.1}
-            max={3}
-            step={0.1}
-            disabled={disabled}
+            value={preset.parameters.typical_p}
+            onChange={(e) => {
+              dispatch(
+                changePreset({
+                  index: index,
+                  change: "typical_p",
+                  value: e.target.value,
+                })
+              );
+            }}
           />
         </div>
         <h5>Repetition Penality</h5>
@@ -283,16 +396,35 @@ export default function Parameters() {
               className={styles.number}
               steps={0.1}
               disabled={disabled}
+              value={preset.parameters.repetition_penalty_range}
+              onChange={(e) => {
+                dispatch(
+                  changePreset({
+                    index: index,
+                    change: "repetition_penalty_range",
+                    value: e.target.value,
+                  })
+                );
+              }}
             />
           </div>
           <Slider
-            defaultValue={1}
             className={styles.slider}
             valueLabelDisplay="auto"
             min={0.1}
             max={3}
             step={0.1}
             disabled={disabled}
+            value={preset.parameters.repetition_penalty_range}
+            onChange={(e) => {
+              dispatch(
+                changePreset({
+                  index: index,
+                  change: "repetition_penalty_range",
+                  value: e.target.value,
+                })
+              );
+            }}
           />
         </div>
         <div className={styles.part}>
@@ -305,16 +437,35 @@ export default function Parameters() {
               className={styles.number}
               steps={0.1}
               disabled={disabled}
+              value={preset.parameters.repetition_penalty_slope}
+              onChange={(e) => {
+                dispatch(
+                  changePreset({
+                    index: index,
+                    change: "repetition_penalty_slope",
+                    value: e.target.value,
+                  })
+                );
+              }}
             />
           </div>
           <Slider
-            defaultValue={1}
             className={styles.slider}
             valueLabelDisplay="auto"
             min={0.1}
             max={3}
             step={0.1}
             disabled={disabled}
+            value={preset.parameters.repetition_penalty_slope}
+            onChange={(e) => {
+              dispatch(
+                changePreset({
+                  index: index,
+                  change: "repetition_penalty_slope",
+                  value: e.target.value,
+                })
+              );
+            }}
           />
         </div>
         <h5>Alternative</h5>
@@ -328,20 +479,39 @@ export default function Parameters() {
               className={styles.number}
               steps={0.1}
               disabled={disabled}
+              value={preset.parameters.repetition_penalty_presence}
+              onChange={(e) => {
+                dispatch(
+                  changePreset({
+                    index: index,
+                    change: "repetition_penalty_presence",
+                    value: e.target.value,
+                  })
+                );
+              }}
             />
           </div>
           <Slider
-            defaultValue={1}
             className={styles.slider}
             valueLabelDisplay="auto"
             min={0.1}
             max={3}
             step={0.1}
             disabled={disabled}
+            value={preset.parameters.repetition_penalty_presence}
+            onChange={(e) => {
+              dispatch(
+                changePreset({
+                  index: index,
+                  change: "repetition_penalty_presence",
+                  value: e.target.value,
+                })
+              );
+            }}
           />
         </div>
         <div className={styles.part}>
-          <h5 className={styles.title}>Frequenzy</h5>
+          <h5 className={styles.title}>Frequency</h5>
           <div className={styles.numberContainer}>
             <input
               type="number"
@@ -350,16 +520,35 @@ export default function Parameters() {
               className={styles.number}
               steps={0.1}
               disabled={disabled}
+              value={preset.parameters.repetition_penalty_frequency}
+              onChange={(e) => {
+                dispatch(
+                  changePreset({
+                    index: index,
+                    change: "repetition_penalty_frequency",
+                    value: e.target.value,
+                  })
+                );
+              }}
             />
           </div>
           <Slider
-            defaultValue={1}
             className={styles.slider}
             valueLabelDisplay="auto"
             min={0.1}
             max={3}
             step={0.1}
             disabled={disabled}
+            value={preset.parameters.repetition_penalty_frequency}
+            onChange={(e) => {
+              dispatch(
+                changePreset({
+                  index: index,
+                  change: "repetition_penalty_frequency",
+                  value: e.target.value,
+                })
+              );
+            }}
           />
         </div>
       </div>

@@ -160,6 +160,16 @@ export const userCounter = createSlice({
     addPreset: (state, action) => {
       state.presets.push(action.payload);
     },
+    changePreset: (state, action) => {
+      const index = action.payload.index;
+      const change = action.payload.change;
+      console.log(typeof action.payload.value);
+      const input =
+        typeof action.payload.value === "number"
+          ? action.payload.value
+          : parseFloat(action.payload.value);
+      state.presets[index].parameters[`${change}`] = input;
+    },
   },
 });
 
@@ -180,6 +190,7 @@ export const {
   updateChatAvatar,
   restoreUserChats,
   addPreset,
+  changePreset,
 } = userCounter.actions;
 
 export const selectUserCounter = (state) => state.settingsCounter.value;

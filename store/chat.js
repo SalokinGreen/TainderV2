@@ -127,6 +127,9 @@ export const chatCounter = createSlice({
     changeModel: (state) => {
       state.model = state.model === "euterpe-v2" ? "krake-v2" : "euterpe-v2";
     },
+    changePreset: (state, action) => {
+      state.preset = action.payload;
+    },
   },
 });
 
@@ -139,6 +142,7 @@ export const {
   deletePartner,
   rerollChat,
   changeModel,
+  changePreset,
 } = chatCounter.actions;
 
 export const selectChatCounter = (state) => state.chatCounter.value;

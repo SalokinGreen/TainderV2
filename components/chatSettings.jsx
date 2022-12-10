@@ -1,6 +1,6 @@
 // This is the right side menu with all the settings
 import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import Parameters from "./parameters";
 import { v4 as uuidv4 } from "uuid";
@@ -11,17 +11,46 @@ import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Popover from "@mui/material/Popover";
+import _ from "lodash";
 import { setGenerateImages, removeChat, addPreset } from "../store/user";
-import { deletePartner, changeModel } from "../store/chat";
+import { deletePartner, changeModel, changePreset } from "../store/chat";
 import styles from "../styles/settingsMenu.module.css";
 const defaultEuterpe = {
   name: "default",
   model: "euterpe-v2",
+  order: {
+    temperature: {
+      value: 0,
+      order: 2,
+    },
+    top_k: {
+      value: 1,
+      order: 1,
+    },
+    top_p: {
+      value: 2,
+      order: 0,
+    },
+    tfs: {
+      value: 3,
+      order: 3,
+    },
+    top_a: {
+      value: 4,
+      order: 0,
+    },
+    typical_p: {
+      value: 5,
+      order: 0,
+    },
+  },
   parameters: {
     temperature: 1.07,
     max_length: 40,
     min_length: 1,
     top_k: 264,
+    top_a: 1,
+    typical_p: 1,
     tail_free_sampling: 0.925,
     repetition_penalty: 1.087375,
     repetition_penalty_range: 404,
@@ -207,6 +236,32 @@ const defaultEuterpe = {
 const defaultKrake = {
   name: "Default Krake",
   id: "default",
+  order: {
+    Temperature: {
+      value: 0,
+      order: 3,
+    },
+    TopK: {
+      value: 1,
+      order: 1,
+    },
+    TopP: {
+      value: 2,
+      order: 0,
+    },
+    TFS: {
+      value: 3,
+      order: 2,
+    },
+    TopA: {
+      value: 4,
+      order: 0,
+    },
+    TypicalP: {
+      value: 5,
+      order: 0,
+    },
+  },
   parameters: {
     temperature: 0.9,
     max_length: 40,
@@ -555,8 +610,23 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
   const [normal, setNormal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElPresets, setAnchorElPresets] = useState(null);
+  const [presetIndex, setPresetIndex] = useState(0);
+  const [presetName, setPresetName] = useState("default");
   const session = useSession();
   const supabase = useSupabaseClient();
+  useEffect(() => {
+    if (chat.preset !== "default") {
+      // find index of preset
+      const index = user.presets.findIndex(
+        (preset) => preset.id === chat.preset
+      );
+      setPresetIndex(index);
+      setPresetName(user.presets[index].name);
+    } else {
+      setPresetIndex(0);
+      setPresetName("default");
+    }
+  }, [chat.preset]);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -632,15 +702,14 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
       }
     }
     const parameters =
-      chat.model === "euterpe-v2"
-        ? defaultEuterpe.parameters
-        : defaultKrake.parameters;
-    let bob = {
+      chat.model === "euterpe-v2" ? defaultEuterpe : defaultKrake;
+    let newPreset = {
       name: "New Preset",
       id: id,
-      parameters: parameters,
+      parameters: parameters.parameters,
+      order: parameters.order,
     };
-    dispatch(addPreset(bob));
+    dispatch(addPreset(newPreset));
   };
   return (
     <div className={open ? styles.menuSettingsOpen : styles.menuSettings}>
@@ -664,12 +733,17 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
             }
           </div>
           <div className={styles.presets} onClick={handleClickPresets}>
-            DEFAULT
+            {presetName}
           </div>
         </div>
         <div className={styles.menuSettingsContentTitle}>Parameters</div>
         <div className={styles.menuSettingsContentItemParameters}>
-          <Parameters />
+          <Parameters
+            index={presetIndex}
+            defaultPreset={
+              chat.model === "euterpe-v2" ? defaultEuterpe : defaultKrake
+            }
+          />
         </div>
         <div className={styles.menuSettingsContentTitle}>Misc</div>
         <div className={styles.menuSettingsContentItem}>
@@ -713,11 +787,25 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
         <div className={styles.model} onClick={() => newPreset()}>
           + New Preset
         </div>
-        {user.presets.map((presets) => (
-          <div className={styles.model} key={presets.id}>
-            {presets.name}
+        {chat.preset !== "default" ? (
+          <div
+            className={styles.model}
+            onClick={() => dispatch(changePreset("default"))}
+          >
+            default
           </div>
-        ))}
+        ) : null}
+        {user.presets.map((presets) =>
+          presets.id !== chat.preset ? (
+            <div
+              className={styles.model}
+              key={presets.id}
+              onClick={() => dispatch(changePreset(presets.id))}
+            >
+              {presets.name}
+            </div>
+          ) : null
+        )}
       </Popover>
     </div>
   );

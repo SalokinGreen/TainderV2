@@ -622,8 +622,10 @@ export default function Messages() {
       case sendMessage.includes("/d"):
         // remove last message from chat
         dispatch(changeChat(newMessages));
+        setGenerating(false);
         break;
       case sendMessage.includes("/ai"):
+        setGenerating(false);
         id = uuidv4();
         exists = _.find(chat.messages, { id: id });
         if (exists) {
@@ -648,6 +650,8 @@ export default function Messages() {
         generate("retry");
         break;
       case sendMessage.includes("/e"):
+        setGenerating(false);
+
         dispatch(changeChat(newMessages));
         from = lastMessage.from === "ai" ? "ai" : "user";
         id = uuidv4();
@@ -697,7 +701,9 @@ export default function Messages() {
     if (chat.preset === "default") {
       preset = chat.model === "euterpe-v2" ? defaultEuterpe : defaultKrake;
     } else {
-      const index = _.findIndex(user.presets, { id: chat.preset });
+      const index = user.presets.findIndex(
+        (preset) => preset.id === chat.preset
+      );
       preset = user.presets[index];
     }
     const response = await axios.post("/api/generateChat", {

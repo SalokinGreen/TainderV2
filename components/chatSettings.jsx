@@ -13,7 +13,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Popover from "@mui/material/Popover";
 import _ from "lodash";
 import { setGenerateImages, removeChat, addPreset } from "../store/user";
-import { deletePartner, changeModel, changePreset } from "../store/chat";
+import {
+  deletePartner,
+  changeModel,
+  changePreset,
+  clearChat,
+} from "../store/chat";
 import styles from "../styles/settingsMenu.module.css";
 const defaultEuterpe = {
   name: "default",
@@ -51,6 +56,7 @@ const defaultEuterpe = {
     top_k: 264,
     top_a: 1,
     typical_p: 1,
+    top_p: 1,
     tail_free_sampling: 0.925,
     repetition_penalty: 1.087375,
     repetition_penalty_range: 404,
@@ -749,6 +755,13 @@ export default function ChatSettings({ open, setOpen, activateNai, generate }) {
         <div className={styles.menuSettingsContentItem}>
           <Button variant="contained" color="error" onClick={() => remove()}>
             Delete
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => dispatch(clearChat())}
+          >
+            Clear Chat
           </Button>
         </div>
       </div>

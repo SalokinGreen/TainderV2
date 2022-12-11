@@ -33,7 +33,7 @@ export default function Parameters({ index, defaultPreset }) {
               max={3}
               min={0.1}
               className={styles.number}
-              steps={0.1}
+              step={0.1}
               value={preset.parameters.temperature}
               onChange={(e) => {
                 dispatch(
@@ -53,7 +53,7 @@ export default function Parameters({ index, defaultPreset }) {
                 max={3}
                 min={0.1}
                 className={styles.number}
-                steps={0.1}
+                step={0.1}
                 disabled={disabled}
                 value={preset.order.temperature.order}
               />
@@ -89,7 +89,7 @@ export default function Parameters({ index, defaultPreset }) {
               max={100}
               min={1}
               className={styles.number}
-              steps={1}
+              step={1}
               disabled={disabled}
               value={preset.parameters.max_length}
               onChange={(e) => {
@@ -133,7 +133,7 @@ export default function Parameters({ index, defaultPreset }) {
               max={3}
               min={0.1}
               className={styles.number}
-              steps={0.1}
+              step={0.1}
               disabled={disabled}
               value={preset.parameters.repetition_penalty}
               onChange={(e) => {
@@ -169,17 +169,17 @@ export default function Parameters({ index, defaultPreset }) {
         <h3>Advanced</h3>
         <h5>Sampling</h5>
         <i className={styles.description}>
-          Turn the order to 0 to disable sampling.
+          Turn the sampling value to 1 to disable it.
         </i>
         <div className={styles.part}>
-          <h5 className={styles.title}>Nucleaus</h5>
+          <h5 className={styles.title}>Top K</h5>
           <div className={styles.numberContainer}>
             <input
               type="number"
-              max={3}
-              min={0.1}
+              max={300}
+              min={0}
               className={styles.number}
-              steps={0.1}
+              step={1}
               disabled={disabled}
               value={preset.parameters.top_k}
               onChange={(e) => {
@@ -199,7 +199,7 @@ export default function Parameters({ index, defaultPreset }) {
                 max={3}
                 min={0.1}
                 className={styles.number}
-                steps={0.1}
+                step={0.1}
                 disabled={disabled}
                 value={preset.order.top_k.order}
               />
@@ -209,9 +209,9 @@ export default function Parameters({ index, defaultPreset }) {
             defaultValue={1}
             className={styles.slider}
             valueLabelDisplay="auto"
-            min={0.1}
-            max={3}
-            step={0.1}
+            min={0}
+            max={300}
+            step={1}
             disabled={disabled}
             value={preset.parameters.top_k}
             onChange={(e) => {
@@ -232,7 +232,7 @@ export default function Parameters({ index, defaultPreset }) {
                 max={1}
                 min={0.001}
                 className={styles.number}
-                steps={0.01}
+                step={0.01}
                 disabled={disabled}
                 value={preset.parameters.top_a}
                 onChange={(e) => {
@@ -252,7 +252,7 @@ export default function Parameters({ index, defaultPreset }) {
                   max={3}
                   min={0.1}
                   className={styles.number}
-                  steps={0.1}
+                  step={0.1}
                   disabled={disabled}
                   value={preset.order.top_a.order}
                 />
@@ -263,7 +263,7 @@ export default function Parameters({ index, defaultPreset }) {
               valueLabelDisplay="auto"
               max={1}
               min={0.001}
-              steps={0.001}
+              step={0.001}
               disabled={disabled}
               value={preset.parameters.top_a}
               onChange={(e) => {
@@ -286,7 +286,7 @@ export default function Parameters({ index, defaultPreset }) {
               max={3}
               min={0.1}
               className={styles.number}
-              steps={0.1}
+              step={0.1}
               disabled={disabled}
               value={preset.parameters.tail_free_sampling}
               onChange={(e) => {
@@ -306,7 +306,7 @@ export default function Parameters({ index, defaultPreset }) {
                 max={3}
                 min={0.1}
                 className={styles.number}
-                steps={0.1}
+                step={0.1}
                 disabled={disabled}
                 value={preset.order.tfs.order}
               />
@@ -317,7 +317,7 @@ export default function Parameters({ index, defaultPreset }) {
             valueLabelDisplay="auto"
             max={1}
             min={0.001}
-            steps={0.001}
+            step={0.001}
             disabled={disabled}
             value={preset.parameters.tail_free_sampling}
             onChange={(e) => {
@@ -339,7 +339,7 @@ export default function Parameters({ index, defaultPreset }) {
               max={3}
               min={0.1}
               className={styles.number}
-              steps={0.1}
+              step={0.1}
               disabled={disabled}
               value={preset.parameters.typical_p}
               onChange={(e) => {
@@ -360,7 +360,7 @@ export default function Parameters({ index, defaultPreset }) {
                 max={3}
                 min={0.1}
                 className={styles.number}
-                steps={0.1}
+                step={0.1}
                 disabled={disabled}
                 value={preset.order.typical_p.order}
               />
@@ -371,7 +371,7 @@ export default function Parameters({ index, defaultPreset }) {
             valueLabelDisplay="auto"
             max={1}
             min={0.001}
-            steps={0.001}
+            step={0.001}
             disabled={disabled}
             value={preset.parameters.typical_p}
             onChange={(e) => {
@@ -379,6 +379,59 @@ export default function Parameters({ index, defaultPreset }) {
                 changePreset({
                   index: index,
                   change: "typical_p",
+                  value: e.target.value,
+                })
+              );
+            }}
+          />
+        </div>
+        <div className={styles.part}>
+          <h5 className={styles.title}>Nucleus</h5>
+          <div className={styles.numberContainer}>
+            <input
+              type="number"
+              max={1}
+              min={0.001}
+              className={styles.number}
+              step={0.01}
+              disabled={disabled}
+              value={preset.parameters.top_p}
+              onChange={(e) => {
+                dispatch(
+                  changePreset({
+                    index: index,
+                    change: "top_p",
+                    value: e.target.value,
+                  })
+                );
+              }}
+            />
+            <div className={styles.numberOrder}>
+              Order
+              <input
+                type="number"
+                max={3}
+                min={0.1}
+                className={styles.number}
+                step={0.1}
+                disabled={disabled}
+                value={preset.order.top_p.order}
+              />
+            </div>
+          </div>
+          <Slider
+            className={styles.slider}
+            valueLabelDisplay="auto"
+            max={1}
+            min={0.001}
+            step={0.001}
+            disabled={disabled}
+            value={preset.parameters.top_p}
+            onChange={(e) => {
+              dispatch(
+                changePreset({
+                  index: index,
+                  change: "top_p",
                   value: e.target.value,
                 })
               );
@@ -394,7 +447,7 @@ export default function Parameters({ index, defaultPreset }) {
               max={3}
               min={0.1}
               className={styles.number}
-              steps={0.1}
+              step={0.1}
               disabled={disabled}
               value={preset.parameters.repetition_penalty_range}
               onChange={(e) => {
@@ -435,7 +488,7 @@ export default function Parameters({ index, defaultPreset }) {
               max={3}
               min={0.1}
               className={styles.number}
-              steps={0.1}
+              step={0.1}
               disabled={disabled}
               value={preset.parameters.repetition_penalty_slope}
               onChange={(e) => {
@@ -477,7 +530,7 @@ export default function Parameters({ index, defaultPreset }) {
               max={3}
               min={0.1}
               className={styles.number}
-              steps={0.1}
+              step={0.1}
               disabled={disabled}
               value={preset.parameters.repetition_penalty_presence}
               onChange={(e) => {
@@ -518,7 +571,7 @@ export default function Parameters({ index, defaultPreset }) {
               max={3}
               min={0.1}
               className={styles.number}
-              steps={0.1}
+              step={0.1}
               disabled={disabled}
               value={preset.parameters.repetition_penalty_frequency}
               onChange={(e) => {

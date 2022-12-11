@@ -130,6 +130,9 @@ export const chatCounter = createSlice({
     changePreset: (state, action) => {
       state.preset = action.payload;
     },
+    clearChat: (state) => {
+      state.messages = [];
+    },
   },
 });
 
@@ -143,6 +146,7 @@ export const {
   rerollChat,
   changeModel,
   changePreset,
+  clearChat
 } = chatCounter.actions;
 
 export const selectChatCounter = (state) => state.chatCounter.value;

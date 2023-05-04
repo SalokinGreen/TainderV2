@@ -240,7 +240,8 @@ const defaultEuterpe = {
   },
 };
 const defaultKrake = {
-  name: "Default Krake",
+  name: "default",
+  model: "krake-v2",
   id: "default",
   order: {
     Temperature: {
@@ -269,17 +270,16 @@ const defaultKrake = {
     },
   },
   parameters: {
-    temperature: 0.9,
+    temperature: 1.05,
     max_length: 40,
     min_length: 1,
-    top_k: 1000,
-    top_a: 0.072,
-    typical_p: 0.98,
-    tail_free_sampling: 0.997,
-    repetition_penalty: 1.0236,
-    repetition_penalty_range: 610,
-    repetition_penalty_slope: 0.85,
-    repetition_penalty_frequency: 0,
+    top_k: 6,
+    top_a: 0.25,
+    typical_p: 0.95,
+    tail_free_sampling: 0.9,
+    repetition_penalty: 1.0333,
+    repetition_penalty_range: 1536,
+    repetition_penalty_frequency: 0.05,
     repetition_penalty_presence: 0,
     bad_words_ids: [
       [60],
@@ -584,10 +584,9 @@ const defaultKrake = {
       [0],
       [1],
     ],
-    stop_sequences: [[187]],
     generate_until_sentence: true,
     use_cache: false,
-    use_string: true,
+    use_string: false,
     return_full_text: false,
     prefix: "vanilla",
     logit_bias_exp: [
@@ -605,7 +604,7 @@ const defaultKrake = {
       },
     ],
     num_logprobs: 10,
-    order: [1, 4, 0, 3, 5],
+    order: [3, 0, 5, 4, 1],
   },
 };
 export default function ChatSettings({ open, setOpen, activateNai, generate }) {
